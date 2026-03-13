@@ -69,6 +69,10 @@ var handleInitData = (initData) => {
     enable: ((_r = initData.editInVisualBuilderButton) == null ? void 0 : _r.enable) ?? ((_t = (_s = stackSdk.live_preview) == null ? void 0 : _s.editInVisualBuilderButton) == null ? void 0 : _t.enable) ?? config.editInVisualBuilderButton.enable,
     position: ((_u = initData.editInVisualBuilderButton) == null ? void 0 : _u.position) ?? ((_v = stackSdk.live_preview) == null ? void 0 : _v.position) ?? config.editInVisualBuilderButton.position ?? "bottom-right"
   });
+  Config.set(
+    "enableLivePreviewOutsideIframe",
+    initData.enableLivePreviewOutsideIframe ?? config.enableLivePreviewOutsideIframe
+  );
   handleClientUrlParams(
     initData.clientUrlParams ?? ((_w = stackSdk.live_preview) == null ? void 0 : _w.clientUrlParams) ?? config.clientUrlParams
   );

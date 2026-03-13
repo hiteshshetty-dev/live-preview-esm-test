@@ -56,7 +56,8 @@ function getUserInitData() {
       live_preview: {},
       environment: ""
     },
-    runScriptsOnUpdate: false
+    runScriptsOnUpdate: false,
+    enableLivePreviewOutsideIframe: void 0
   };
 }
 function getDefaultConfig() {
@@ -121,7 +122,8 @@ function getDefaultConfig() {
         inviteUid: ""
       },
       payload: []
-    }
+    },
+    enableLivePreviewOutsideIframe: void 0
   };
 }
 // Annotate the CommonJS export names for ESM import in node:

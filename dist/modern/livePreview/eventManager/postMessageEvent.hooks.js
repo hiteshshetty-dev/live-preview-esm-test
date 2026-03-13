@@ -99,15 +99,20 @@ function useOnEntryUpdatePostMessageEvent() {
   );
 }
 function sendInitializeLivePreviewPostMessageEvent() {
+  const config = Config.get();
+  const initConfig = {
+    shouldReload: config.ssr,
+    href: window.location.href,
+    sdkVersion: "4.3.0",
+    mode: config.mode
+  };
+  if (config.enableLivePreviewOutsideIframe !== void 0) {
+    initConfig.enableLivePreviewOutsideIframe = config.enableLivePreviewOutsideIframe;
+  }
   livePreviewPostMessage?.send(
     LIVE_PREVIEW_POST_MESSAGE_EVENTS.INIT,
     {
-      config: {
-        shouldReload: Config.get().ssr,
-        href: window.location.href,
-        sdkVersion: "4.2.1-stage",
-        mode: Config.get().mode
-      }
+      config: initConfig
     }
   ).then((data) => {
     const {

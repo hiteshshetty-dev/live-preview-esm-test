@@ -80,6 +80,7 @@ declare interface IConfig {
         highlightedElement: HTMLElement | null;
     };
     collab: ICollabConfig["collab"];
+    enableLivePreviewOutsideIframe: boolean | undefined;
 }
 declare interface IConfigEditInVisualBuilderButton {
     enable: boolean;
@@ -106,6 +107,7 @@ declare interface IInitData {
     editButton: IConfigEditButton;
     editInVisualBuilderButton: IConfigEditInVisualBuilderButton;
     mode: ILivePreviewMode;
+    enableLivePreviewOutsideIframe: boolean | undefined;
 }
 declare interface ILivePreviewMessageCommon {
     from: "live-preview";

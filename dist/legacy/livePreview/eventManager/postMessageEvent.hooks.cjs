@@ -135,15 +135,20 @@ function useOnEntryUpdatePostMessageEvent() {
 }
 function sendInitializeLivePreviewPostMessageEvent() {
   var _a;
+  const config = import_configManager.default.get();
+  const initConfig = {
+    shouldReload: config.ssr,
+    href: window.location.href,
+    sdkVersion: "4.3.0",
+    mode: config.mode
+  };
+  if (config.enableLivePreviewOutsideIframe !== void 0) {
+    initConfig.enableLivePreviewOutsideIframe = config.enableLivePreviewOutsideIframe;
+  }
   (_a = import_livePreviewEventManager.default) == null ? void 0 : _a.send(
     import_livePreviewEventManager2.LIVE_PREVIEW_POST_MESSAGE_EVENTS.INIT,
     {
-      config: {
-        shouldReload: import_configManager.default.get().ssr,
-        href: window.location.href,
-        sdkVersion: "4.2.1-stage",
-        mode: import_configManager.default.get().mode
-      }
+      config: initConfig
     }
   ).then((data) => {
     var _a2, _b;
