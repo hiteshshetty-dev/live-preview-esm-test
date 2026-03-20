@@ -8,7 +8,7 @@ import { VisualBuilderPostMessageEvents } from "../utils/types/postMessage.types
 import { FieldSchemaMap } from "../utils/fieldSchemaMap.js";
 import { updateVariantClasses } from "./useRecalculateVariantDataCSLPValues.js";
 import { debounce } from "lodash-es";
-import { extractDetailsFromCslp } from "../../cslp/cslpdata.js";
+import { extractDetailsFromCslp, isValidCslp } from "../../cslp/cslpdata.js";
 function isLowerOrderVariant(variant_uid, dataCslp, variantOrder) {
   if (!variantOrder || variantOrder.length === 0) {
     return false;
@@ -27,7 +27,7 @@ function addVariantFieldClass(variant_uid) {
   const elements = document.querySelectorAll(`[data-cslp]`);
   elements.forEach((element) => {
     const dataCslp = element.getAttribute("data-cslp");
-    if (!dataCslp) return;
+    if (!isValidCslp(dataCslp)) return;
     if (dataCslp == null ? void 0 : dataCslp.includes(variant_uid)) {
       element.classList.add("visual-builder__variant-field");
       if (highlightVariantFields) {

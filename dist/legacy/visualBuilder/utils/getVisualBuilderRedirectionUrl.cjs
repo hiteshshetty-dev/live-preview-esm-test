@@ -51,7 +51,7 @@ function getVisualBuilderRedirectionUrl() {
   let localeToUse = locale;
   if (elementWithDataCslp) {
     const cslpData = elementWithDataCslp.getAttribute("data-cslp");
-    if (cslpData) {
+    if ((0, import_cslp.isValidCslp)(cslpData)) {
       const { locale: cslpLocale } = (0, import_cslp.extractDetailsFromCslp)(cslpData);
       localeToUse = cslpLocale;
     }
@@ -60,7 +60,7 @@ function getVisualBuilderRedirectionUrl() {
     searchParams.set("locale", localeToUse);
   }
   const completeURL = new URL(
-    `/#!/stack/${apiKey}/visual-builder?${searchParams.toString()}`,
+    `/#!/stack/${apiKey}/visual-editor?${searchParams.toString()}`,
     appUrl
   );
   return completeURL;

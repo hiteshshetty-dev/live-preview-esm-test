@@ -31,7 +31,7 @@ function getEntryIdentifiersInCurrentPage() {
   const uniqueEntriesMap = /* @__PURE__ */ new Map();
   elementsWithCslp.forEach((element) => {
     const cslpValue = element.getAttribute("data-cslp");
-    if (!cslpValue) return;
+    if (!(0, import_cslpdata.isValidCslp)(cslpValue)) return;
     const cslpData = (0, import_cslpdata.extractDetailsFromCslp)(cslpValue);
     uniqueEntriesMap.set(
       cslpData.entry_uid,

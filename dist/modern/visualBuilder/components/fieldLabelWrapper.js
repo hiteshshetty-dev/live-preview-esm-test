@@ -3,7 +3,7 @@ import "../../chunk-5WRI5ZAA.js";
 // src/visualBuilder/components/fieldLabelWrapper.tsx
 import classNames from "classnames";
 import { useEffect, useState } from "preact/compat";
-import { extractDetailsFromCslp } from "../../cslp/index.js";
+import { extractDetailsFromCslp, isValidCslp } from "../../cslp/index.js";
 import { FieldSchemaMap } from "../utils/fieldSchemaMap.js";
 import { DisableReason, isFieldDisabled } from "../utils/isFieldDisabled.js";
 import visualBuilderPostMessage from "../utils/visualBuilderPostMessage.js";
@@ -102,7 +102,7 @@ function FieldLabelWrapperComponent(props) {
         const domAncestor = eventDetails.editableElement.closest(`[data-cslp]:not([data-cslp^="${props.fieldMetadata.content_type_uid}"])`);
         if (domAncestor) {
           const domAncestorCslp = domAncestor.getAttribute("data-cslp");
-          if (domAncestorCslp) {
+          if (isValidCslp(domAncestorCslp)) {
             const domAncestorDetails = extractDetailsFromCslp(domAncestorCslp);
             const domAncestorContentTypeUid = domAncestorDetails.content_type_uid;
             const domAncestorContentParent = referenceData?.find((data) => data.contentTypeUid === domAncestorContentTypeUid);

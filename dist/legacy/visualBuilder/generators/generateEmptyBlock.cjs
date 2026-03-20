@@ -32,7 +32,7 @@ var import_jsx_runtime = require("preact/jsx-runtime");
 async function generateEmptyBlocks(emptyBlockParents) {
   for (const emptyBlockParent of emptyBlockParents) {
     const cslpData = emptyBlockParent.getAttribute("data-cslp");
-    if (!cslpData) {
+    if (!(0, import_cslp.isValidCslp)(cslpData)) {
       return;
     }
     const fieldMetadata = (0, import_cslp.extractDetailsFromCslp)(cslpData);

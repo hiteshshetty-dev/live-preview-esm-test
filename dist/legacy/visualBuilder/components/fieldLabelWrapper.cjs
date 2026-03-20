@@ -138,7 +138,7 @@ function FieldLabelWrapperComponent(props) {
         const domAncestor = eventDetails.editableElement.closest(`[data-cslp]:not([data-cslp^="${props.fieldMetadata.content_type_uid}"])`);
         if (domAncestor) {
           const domAncestorCslp = domAncestor.getAttribute("data-cslp");
-          if (domAncestorCslp) {
+          if ((0, import_cslp.isValidCslp)(domAncestorCslp)) {
             const domAncestorDetails = (0, import_cslp.extractDetailsFromCslp)(domAncestorCslp);
             const domAncestorContentTypeUid = domAncestorDetails.content_type_uid;
             const domAncestorContentParent = referenceData == null ? void 0 : referenceData.find((data) => data.contentTypeUid === domAncestorContentTypeUid);

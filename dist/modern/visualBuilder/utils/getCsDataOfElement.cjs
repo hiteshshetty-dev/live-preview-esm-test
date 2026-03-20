@@ -36,7 +36,7 @@ function getCsDataOfElement(event) {
     return;
   }
   const cslpData = editableElement.getAttribute("data-cslp");
-  if (!cslpData) {
+  if (!(0, import_cslpdata.isValidCslp)(cslpData)) {
     return;
   }
   const fieldMetadata = (0, import_cslpdata.extractDetailsFromCslp)(cslpData);
@@ -64,7 +64,7 @@ function getDOMEditStack(ele) {
   let curr = ele.closest(`[${import_constants.DATA_CSLP_ATTR_SELECTOR}]`);
   while (curr) {
     const cslp = curr.getAttribute(import_constants.DATA_CSLP_ATTR_SELECTOR);
-    if (!cslp) {
+    if (!(0, import_cslpdata.isValidCslp)(cslp)) {
       curr = curr.parentElement?.closest(`[${import_constants.DATA_CSLP_ATTR_SELECTOR}]`);
       continue;
     }
@@ -77,7 +77,7 @@ function getDOMEditStack(ele) {
     }
     curr = curr.parentElement?.closest(`[${import_constants.DATA_CSLP_ATTR_SELECTOR}]`);
   }
-  return cslpSet.filter((cslp) => cslp).map((cslp) => (0, import_cslpdata.extractDetailsFromCslp)(cslp));
+  return cslpSet.filter(import_cslpdata.isValidCslp).map((cslp) => (0, import_cslpdata.extractDetailsFromCslp)(cslp));
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

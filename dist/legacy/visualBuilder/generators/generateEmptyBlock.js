@@ -3,13 +3,13 @@ import "../../chunk-5WRI5ZAA.js";
 // src/visualBuilder/generators/generateEmptyBlock.tsx
 import { hydrate } from "preact";
 import { EmptyBlock } from "../components/emptyBlock.js";
-import { extractDetailsFromCslp } from "../../cslp/index.js";
+import { extractDetailsFromCslp, isValidCslp } from "../../cslp/index.js";
 import { FieldSchemaMap } from "../utils/fieldSchemaMap.js";
 import { jsx } from "preact/jsx-runtime";
 async function generateEmptyBlocks(emptyBlockParents) {
   for (const emptyBlockParent of emptyBlockParents) {
     const cslpData = emptyBlockParent.getAttribute("data-cslp");
-    if (!cslpData) {
+    if (!isValidCslp(cslpData)) {
       return;
     }
     const fieldMetadata = extractDetailsFromCslp(cslpData);

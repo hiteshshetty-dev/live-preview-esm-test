@@ -68,7 +68,7 @@ function addVariantFieldClass(variant_uid) {
   const elements = document.querySelectorAll(`[data-cslp]`);
   elements.forEach((element) => {
     const dataCslp = element.getAttribute("data-cslp");
-    if (!dataCslp) return;
+    if (!(0, import_cslpdata.isValidCslp)(dataCslp)) return;
     if (dataCslp?.includes(variant_uid)) {
       element.classList.add("visual-builder__variant-field");
       if (highlightVariantFields) {

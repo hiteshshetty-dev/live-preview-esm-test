@@ -2,7 +2,7 @@ import "../../chunk-5WRI5ZAA.js";
 
 // src/visualBuilder/utils/updateFocussedState.ts
 import { VisualBuilder } from "../index.js";
-import { extractDetailsFromCslp } from "../../cslp/index.js";
+import { extractDetailsFromCslp, isValidCslp } from "../../cslp/index.js";
 import { getAddInstanceButtons } from "../generators/generateAddInstanceButtons.js";
 import {
   addFocusOverlay,
@@ -77,7 +77,7 @@ async function updateFocussedState({
     VisualBuilder.VisualBuilderGlobalState.value.previousSelectedEditableDOM = previousSelectedEditableDOM;
   }
   const cslp = (editableElement == null ? void 0 : editableElement.getAttribute("data-cslp")) || "";
-  if (!cslp) {
+  if (!isValidCslp(cslp)) {
     return;
   }
   const fieldMetadata = extractDetailsFromCslp(cslp);

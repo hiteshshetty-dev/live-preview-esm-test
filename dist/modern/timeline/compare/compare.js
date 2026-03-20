@@ -4,6 +4,7 @@ import "../../chunk-5WRI5ZAA.js";
 import timelinePostMessage from "../timelinePostMessage/timelinePostMessage.js";
 import { timelinePostMessageEvents } from "../timelinePostMessage/timelinePostMessage.constant.js";
 import { compareGlobalStyles } from "./compare.style.js";
+import { isValidCslp } from "../../cslp/cslpdata.js";
 var voidElements = /* @__PURE__ */ new Set([
   "area",
   "base",
@@ -57,6 +58,7 @@ function handleWebCompare() {
       const map = {};
       for (const element of elements) {
         const cslp = element.getAttribute("data-cslp");
+        if (!isValidCslp(cslp)) continue;
         if (element.hasAttributes() && voidElements.has(element.tagName.toLowerCase())) {
           let attributes = "";
           for (const attr of element.attributes) {
@@ -88,7 +90,7 @@ function handleWebCompare() {
     );
     for (const element of elements) {
       const path = element.getAttribute("data-cslp");
-      if (!diff[path]) continue;
+      if (!isValidCslp(path) || !diff[path]) continue;
       if (voidElements.has(element.tagName.toLowerCase())) {
         element.classList.add(`cs-compare__void--${operation}`);
       } else {

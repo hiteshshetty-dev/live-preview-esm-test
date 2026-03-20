@@ -1,7 +1,7 @@
 import "../../chunk-5WRI5ZAA.js";
 
 // src/visualBuilder/utils/getEntryIdentifiersInCurrentPage.ts
-import { extractDetailsFromCslp } from "../../cslp/cslpdata.js";
+import { extractDetailsFromCslp, isValidCslp } from "../../cslp/cslpdata.js";
 function getEntryIdentifiersInCurrentPage() {
   const elementsWithCslp = Array.from(
     document.querySelectorAll("[data-cslp]")
@@ -9,7 +9,7 @@ function getEntryIdentifiersInCurrentPage() {
   const uniqueEntriesMap = /* @__PURE__ */ new Map();
   elementsWithCslp.forEach((element) => {
     const cslpValue = element.getAttribute("data-cslp");
-    if (!cslpValue) return;
+    if (!isValidCslp(cslpValue)) return;
     const cslpData = extractDetailsFromCslp(cslpValue);
     uniqueEntriesMap.set(
       cslpData.entry_uid,

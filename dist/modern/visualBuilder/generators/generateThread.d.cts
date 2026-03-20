@@ -1,4 +1,4 @@
-import { IThreadDTO, toggleCollabPopupEvent, MissingThreadsInfo, IThreadRenderStatus } from '../types/collab.types.cjs';
+import { IThreadDTO, MissingThreadsInfo, IThreadRenderStatus, toggleCollabPopupEvent } from '../types/collab.types.cjs';
 
 declare function generateThread(payload: IThreadDTO | any, options?: {
     isNewThread?: boolean;

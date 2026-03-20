@@ -2,7 +2,7 @@ import "../../chunk-5WRI5ZAA.js";
 
 // src/visualBuilder/eventManager/useRevalidateFieldDataPostMessageEvent.ts
 import { VisualBuilder } from "../index.js";
-import { extractDetailsFromCslp } from "../../cslp/index.js";
+import { extractDetailsFromCslp, isValidCslp } from "../../cslp/index.js";
 import { FieldSchemaMap } from "../utils/fieldSchemaMap.js";
 import { hideFocusOverlay } from "../generators/generateOverlay.js";
 import { handleBuilderInteraction } from "../listeners/mouseClick.js";
@@ -19,7 +19,7 @@ async function handleRevalidateFieldData() {
     const targetElement = hoveredElement || focusedElement;
     if (targetElement) {
       const cslp = targetElement.getAttribute("data-cslp");
-      if (cslp) {
+      if (isValidCslp(cslp)) {
         const fieldMetadata = extractDetailsFromCslp(cslp);
         FieldSchemaMap.clearContentTypeSchema(
           fieldMetadata.content_type_uid
@@ -31,7 +31,7 @@ async function handleRevalidateFieldData() {
     console.error("Error handling revalidate field data:", error);
     window.location.reload();
   } finally {
-    if (shouldRefocus && elementCslp) {
+    if (shouldRefocus && isValidCslp(elementCslp)) {
       await refocusElement(elementCslp, elementCslpUniqueId);
     }
   }

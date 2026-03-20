@@ -1,7 +1,7 @@
 import "../../chunk-5WRI5ZAA.js";
 
 // src/visualBuilder/utils/getCsDataOfElement.ts
-import { extractDetailsFromCslp } from "../../cslp/cslpdata.js";
+import { extractDetailsFromCslp, isValidCslp } from "../../cslp/cslpdata.js";
 import { DATA_CSLP_ATTR_SELECTOR } from "./constants.js";
 function getCsDataOfElement(event) {
   const targetElement = event.target;
@@ -13,7 +13,7 @@ function getCsDataOfElement(event) {
     return;
   }
   const cslpData = editableElement.getAttribute("data-cslp");
-  if (!cslpData) {
+  if (!isValidCslp(cslpData)) {
     return;
   }
   const fieldMetadata = extractDetailsFromCslp(cslpData);
@@ -41,7 +41,7 @@ function getDOMEditStack(ele) {
   let curr = ele.closest(`[${DATA_CSLP_ATTR_SELECTOR}]`);
   while (curr) {
     const cslp = curr.getAttribute(DATA_CSLP_ATTR_SELECTOR);
-    if (!cslp) {
+    if (!isValidCslp(cslp)) {
       curr = curr.parentElement?.closest(`[${DATA_CSLP_ATTR_SELECTOR}]`);
       continue;
     }
@@ -54,7 +54,7 @@ function getDOMEditStack(ele) {
     }
     curr = curr.parentElement?.closest(`[${DATA_CSLP_ATTR_SELECTOR}]`);
   }
-  return cslpSet.filter((cslp) => cslp).map((cslp) => extractDetailsFromCslp(cslp));
+  return cslpSet.filter(isValidCslp).map((cslp) => extractDetailsFromCslp(cslp));
 }
 export {
   getCsDataOfElement,

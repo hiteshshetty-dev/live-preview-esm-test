@@ -4,6 +4,29 @@ import "../chunk-5WRI5ZAA.js";
 import { isNil, isFinite, findLastIndex, findLast } from "lodash-es";
 import Config from "../configManager/configManager.js";
 import { cslpTagStyles } from "../livePreview/editButton/editButton.style.js";
+function areRequiredPartsNonEmpty(parts) {
+  if (parts.length < 3) {
+    return false;
+  }
+  return parts[0].length > 0 && parts[1].length > 0 && parts[2].length > 0;
+}
+function isValidCslp(cslpValue) {
+  if (!cslpValue) {
+    return false;
+  }
+  if (cslpValue.startsWith("v2:")) {
+    const dataAfterPrefix = cslpValue.substring(3);
+    const parts2 = dataAfterPrefix.split(".");
+    if (!areRequiredPartsNonEmpty(parts2)) {
+      return false;
+    }
+    const entryUidVariantUid = parts2[1];
+    const entryVariantParts = entryUidVariantUid.split("_");
+    return entryVariantParts.length >= 2 && entryVariantParts.every((part) => part.length > 0);
+  }
+  const parts = cslpValue.split(".");
+  return areRequiredPartsNonEmpty(parts);
+}
 function extractDetailsFromCslp(cslpValue) {
   let [cslpVersion, cslpData] = cslpValue.split(":");
   if (cslpVersion.length > 2) {
@@ -90,7 +113,7 @@ function addCslpOutline(e, callback) {
     if (element.nodeName === "BODY") break;
     if (typeof element?.getAttribute !== "function") continue;
     const cslpTag = element.getAttribute("data-cslp");
-    if (trigger && cslpTag) {
+    if (trigger && isValidCslp(cslpTag)) {
       if (elements.highlightedElement)
         elements.highlightedElement.classList.remove(
           cslpTagStyles()["cslp-edit-mode"]
@@ -111,6 +134,7 @@ function addCslpOutline(e, callback) {
 }
 export {
   addCslpOutline,
-  extractDetailsFromCslp
+  extractDetailsFromCslp,
+  isValidCslp
 };
 //# sourceMappingURL=cslpdata.js.map

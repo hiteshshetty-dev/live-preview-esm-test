@@ -110,7 +110,7 @@ var _VisualBuilder = class _VisualBuilder {
         this.handlePositionChange(editableElement);
       }
       const cslpData = editableElement && editableElement.getAttribute("data-cslp");
-      if (!editableElement || !cslpData) {
+      if (!editableElement || !(0, import_cslp.isValidCslp)(cslpData)) {
         return;
       }
       const fieldMetadata = (0, import_cslp.extractDetailsFromCslp)(cslpData);

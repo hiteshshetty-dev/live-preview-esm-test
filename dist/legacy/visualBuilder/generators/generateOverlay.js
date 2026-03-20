@@ -1,7 +1,7 @@
 import "../../chunk-5WRI5ZAA.js";
 
 // src/visualBuilder/generators/generateOverlay.tsx
-import { extractDetailsFromCslp } from "../../cslp/cslpdata.js";
+import { extractDetailsFromCslp, isValidCslp } from "../../cslp/cslpdata.js";
 import { cleanIndividualFieldResidual } from "../utils/handleIndividualFields.js";
 import visualBuilderPostMessage from "../utils/visualBuilderPostMessage.js";
 import { VisualBuilderPostMessageEvents } from "../utils/types/postMessage.types.js";
@@ -111,7 +111,7 @@ function sendFieldEvent(options) {
     const actualEditedElement = pseudoEditableElement || previousSelectedEditableDOM;
     let data = "innerText" in actualEditedElement ? actualEditedElement.innerText : actualEditedElement.textContent;
     const cslpData = previousSelectedEditableDOM.getAttribute("data-cslp");
-    if (!cslpData) {
+    if (!isValidCslp(cslpData)) {
       return;
     }
     const fieldMetadata = extractDetailsFromCslp(cslpData);

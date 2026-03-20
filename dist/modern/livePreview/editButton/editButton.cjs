@@ -340,7 +340,7 @@ var LivePreviewEditButton = class {
   scrollHandler() {
     if (!this.tooltip) return;
     const cslpTag = this.tooltip.getAttribute("current-data-cslp");
-    if (cslpTag) {
+    if ((0, import_cslp.isValidCslp)(cslpTag)) {
       const {
         content_type_uid,
         entry_uid,

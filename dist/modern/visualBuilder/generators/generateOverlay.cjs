@@ -146,7 +146,7 @@ function sendFieldEvent(options) {
     const actualEditedElement = pseudoEditableElement || previousSelectedEditableDOM;
     let data = "innerText" in actualEditedElement ? actualEditedElement.innerText : actualEditedElement.textContent;
     const cslpData = previousSelectedEditableDOM.getAttribute("data-cslp");
-    if (!cslpData) {
+    if (!(0, import_cslpdata.isValidCslp)(cslpData)) {
       return;
     }
     const fieldMetadata = (0, import_cslpdata.extractDetailsFromCslp)(cslpData);

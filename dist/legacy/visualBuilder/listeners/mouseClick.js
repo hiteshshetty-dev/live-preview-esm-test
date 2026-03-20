@@ -9,6 +9,7 @@ import {
   getCsDataOfElement,
   getDOMEditStack
 } from "../utils/getCsDataOfElement.js";
+import { isValidCslp } from "../../cslp/index.js";
 import { appendFocusedToolbar } from "../generators/generateToolbar.js";
 import { addFocusOverlay, hideOverlay } from "../generators/generateOverlay.js";
 import visualBuilderPostMessage from "../utils/visualBuilderPostMessage.js";
@@ -51,16 +52,19 @@ async function handleBuilderInteraction(params) {
   const eventTarget = params.event.target;
   const isAnchorElement = eventTarget instanceof HTMLAnchorElement;
   const elementHasCslp = eventTarget && (eventTarget.hasAttribute("data-cslp") || eventTarget.closest("[data-cslp]"));
-  const duplicates = document.querySelectorAll(
-    `[data-cslp="${eventTarget == null ? void 0 : eventTarget.getAttribute("data-cslp")}"]`
-  );
-  if (duplicates.length > 1) {
-    duplicates.forEach((ele) => {
-      if (!ele.hasAttribute("data-cslp-unique-id")) {
-        const uniqueId = `cslp-${uuidV4()}`;
-        ele.setAttribute("data-cslp-unique-id", uniqueId);
-      }
-    });
+  const eventTargetCslp = eventTarget == null ? void 0 : eventTarget.getAttribute("data-cslp");
+  if (isValidCslp(eventTargetCslp)) {
+    const duplicates = document.querySelectorAll(
+      `[data-cslp="${eventTargetCslp}"]`
+    );
+    if (duplicates.length > 1) {
+      duplicates.forEach((ele) => {
+        if (!ele.hasAttribute("data-cslp-unique-id")) {
+          const uniqueId = `cslp-${uuidV4()}`;
+          ele.setAttribute("data-cslp-unique-id", uniqueId);
+        }
+      });
+    }
   }
   if ((eventTarget == null ? void 0 : eventTarget.getAttribute("data-studio-ui")) === "true") {
     return;

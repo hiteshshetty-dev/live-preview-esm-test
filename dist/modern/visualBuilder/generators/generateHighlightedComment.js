@@ -5,12 +5,13 @@ import { h } from "preact";
 import { render } from "preact";
 import HighlightedCommentIcon from "../components/HighlightedCommentIcon.js";
 import { css } from "goober";
+import { isValidCslp } from "../../cslp/index.js";
 var highlighCommentOffset = 25;
 function highlightCommentIconOnCanvas(payload) {
   const uniquePaths = {};
   payload.forEach((data) => {
     const cslpValue = data?.fieldMetadata?.cslpValue;
-    if (!cslpValue || uniquePaths[cslpValue]) {
+    if (!isValidCslp(cslpValue) || uniquePaths[cslpValue]) {
       return;
     }
     uniquePaths[cslpValue] = true;

@@ -101,7 +101,7 @@ async function updateFocussedState({
     import__.VisualBuilder.VisualBuilderGlobalState.value.previousSelectedEditableDOM = previousSelectedEditableDOM;
   }
   const cslp = editableElement?.getAttribute("data-cslp") || "";
-  if (!cslp) {
+  if (!(0, import_cslp.isValidCslp)(cslp)) {
     return;
   }
   const fieldMetadata = (0, import_cslp.extractDetailsFromCslp)(cslp);

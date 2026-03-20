@@ -4,7 +4,7 @@ import "../../chunk-5WRI5ZAA.js";
 import { effect } from "@preact/signals";
 import { inIframe, isOpeningInNewTab } from "../../common/inIframe.js";
 import Config from "../../configManager/configManager.js";
-import { addCslpOutline, extractDetailsFromCslp } from "../../cslp/index.js";
+import { addCslpOutline, extractDetailsFromCslp, isValidCslp } from "../../cslp/index.js";
 import { cslpTagStyles } from "./editButton.style.js";
 import { PublicLogger } from "../../logger/logger.js";
 import {
@@ -303,7 +303,7 @@ var LivePreviewEditButton = class {
   scrollHandler() {
     if (!this.tooltip) return;
     const cslpTag = this.tooltip.getAttribute("current-data-cslp");
-    if (cslpTag) {
+    if (isValidCslp(cslpTag)) {
       const {
         content_type_uid,
         entry_uid,

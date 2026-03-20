@@ -1,4 +1,4 @@
-import { IUserDTO, IMentionedList, IMentionItem, IMessageDTO, IUserState, ICommentState } from '../types/collab.types.js';
+import { IMentionedList, IMentionItem, ICommentState, IMessageDTO, IUserState, IUserDTO } from '../types/collab.types.js';
 
 /**
  * Generates the title for the thread based on the number of comments.

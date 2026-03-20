@@ -42,12 +42,13 @@ var import_preact = require("preact");
 var import_preact2 = require("preact");
 var import_HighlightedCommentIcon = __toESM(require("../components/HighlightedCommentIcon.cjs"), 1);
 var import_goober = require("goober");
+var import_cslp = require("../../cslp/index.cjs");
 var highlighCommentOffset = 25;
 function highlightCommentIconOnCanvas(payload) {
   const uniquePaths = {};
   payload.forEach((data) => {
     const cslpValue = data?.fieldMetadata?.cslpValue;
-    if (!cslpValue || uniquePaths[cslpValue]) {
+    if (!(0, import_cslp.isValidCslp)(cslpValue) || uniquePaths[cslpValue]) {
       return;
     }
     uniquePaths[cslpValue] = true;

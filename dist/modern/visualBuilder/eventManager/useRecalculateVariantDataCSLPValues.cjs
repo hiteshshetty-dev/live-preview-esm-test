@@ -39,6 +39,7 @@ var import_livePreviewEventManager = __toESM(require("../../livePreview/eventMan
 var import_livePreviewEventManager2 = require("../../livePreview/eventManager/livePreviewEventManager.constant.cjs");
 var import_constants = require("../utils/constants.cjs");
 var import_visualBuilder = require("../visualBuilder.style.cjs");
+var import_cslpdata = require("../../cslp/cslpdata.cjs");
 var import_useVariantsPostMessageEvent = require("./useVariantsPostMessageEvent.cjs");
 var VARIANT_UPDATE_DELAY_MS = 8e3;
 function useRecalculateVariantDataCSLPValues() {
@@ -57,7 +58,7 @@ function updateVariantClasses() {
   const variant = import__.VisualBuilder.VisualBuilderGlobalState.value.variant;
   const observers = [];
   const updateElementClasses = (element, dataCslp, observer) => {
-    if (!dataCslp) return;
+    if (!(0, import_cslpdata.isValidCslp)(dataCslp)) return;
     if (dataCslp.startsWith("v2:") && !element.classList.contains("visual-builder__variant-field")) {
       if (element.classList.contains("visual-builder__base-field")) {
         element.classList.remove("visual-builder__base-field");
@@ -89,7 +90,7 @@ function updateVariantClasses() {
   };
   const addElementClasses = (element) => {
     const dataCslp = element.getAttribute(import_constants.DATA_CSLP_ATTR_SELECTOR);
-    if (!dataCslp) {
+    if (!(0, import_cslpdata.isValidCslp)(dataCslp)) {
       element.childNodes.forEach((child) => {
         if (child instanceof HTMLElement) {
           addElementClasses(child);

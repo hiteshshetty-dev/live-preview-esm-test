@@ -31,12 +31,36 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var cslpdata_exports = {};
 __export(cslpdata_exports, {
   addCslpOutline: () => addCslpOutline,
-  extractDetailsFromCslp: () => extractDetailsFromCslp
+  extractDetailsFromCslp: () => extractDetailsFromCslp,
+  isValidCslp: () => isValidCslp
 });
 module.exports = __toCommonJS(cslpdata_exports);
 var import_lodash_es = require("lodash-es");
 var import_configManager = __toESM(require("../configManager/configManager.cjs"), 1);
 var import_editButton = require("../livePreview/editButton/editButton.style.cjs");
+function areRequiredPartsNonEmpty(parts) {
+  if (parts.length < 3) {
+    return false;
+  }
+  return parts[0].length > 0 && parts[1].length > 0 && parts[2].length > 0;
+}
+function isValidCslp(cslpValue) {
+  if (!cslpValue) {
+    return false;
+  }
+  if (cslpValue.startsWith("v2:")) {
+    const dataAfterPrefix = cslpValue.substring(3);
+    const parts2 = dataAfterPrefix.split(".");
+    if (!areRequiredPartsNonEmpty(parts2)) {
+      return false;
+    }
+    const entryUidVariantUid = parts2[1];
+    const entryVariantParts = entryUidVariantUid.split("_");
+    return entryVariantParts.length >= 2 && entryVariantParts.every((part) => part.length > 0);
+  }
+  const parts = cslpValue.split(".");
+  return areRequiredPartsNonEmpty(parts);
+}
 function extractDetailsFromCslp(cslpValue) {
   let [cslpVersion, cslpData] = cslpValue.split(":");
   if (cslpVersion.length > 2) {
@@ -123,7 +147,7 @@ function addCslpOutline(e, callback) {
     if (element.nodeName === "BODY") break;
     if (typeof (element == null ? void 0 : element.getAttribute) !== "function") continue;
     const cslpTag = element.getAttribute("data-cslp");
-    if (trigger && cslpTag) {
+    if (trigger && isValidCslp(cslpTag)) {
       if (elements.highlightedElement)
         elements.highlightedElement.classList.remove(
           (0, import_editButton.cslpTagStyles)()["cslp-edit-mode"]
@@ -145,6 +169,7 @@ function addCslpOutline(e, callback) {
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   addCslpOutline,
-  extractDetailsFromCslp
+  extractDetailsFromCslp,
+  isValidCslp
 });
 //# sourceMappingURL=cslpdata.cjs.map

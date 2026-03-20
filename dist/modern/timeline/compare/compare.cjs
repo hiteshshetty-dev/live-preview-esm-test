@@ -36,6 +36,7 @@ module.exports = __toCommonJS(compare_exports);
 var import_timelinePostMessage = __toESM(require("../timelinePostMessage/timelinePostMessage.cjs"), 1);
 var import_timelinePostMessage2 = require("../timelinePostMessage/timelinePostMessage.constant.cjs");
 var import_compare = require("./compare.style.cjs");
+var import_cslpdata = require("../../cslp/cslpdata.cjs");
 var voidElements = /* @__PURE__ */ new Set([
   "area",
   "base",
@@ -89,6 +90,7 @@ function handleWebCompare() {
       const map = {};
       for (const element of elements) {
         const cslp = element.getAttribute("data-cslp");
+        if (!(0, import_cslpdata.isValidCslp)(cslp)) continue;
         if (element.hasAttributes() && voidElements.has(element.tagName.toLowerCase())) {
           let attributes = "";
           for (const attr of element.attributes) {
@@ -120,7 +122,7 @@ function handleWebCompare() {
     );
     for (const element of elements) {
       const path = element.getAttribute("data-cslp");
-      if (!diff[path]) continue;
+      if (!(0, import_cslpdata.isValidCslp)(path) || !diff[path]) continue;
       if (voidElements.has(element.tagName.toLowerCase())) {
         element.classList.add(`cs-compare__void--${operation}`);
       } else {

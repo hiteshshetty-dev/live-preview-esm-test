@@ -41,7 +41,7 @@ async function handleRevalidateFieldData() {
     const targetElement = hoveredElement || focusedElement;
     if (targetElement) {
       const cslp = targetElement.getAttribute("data-cslp");
-      if (cslp) {
+      if ((0, import_cslp.isValidCslp)(cslp)) {
         const fieldMetadata = (0, import_cslp.extractDetailsFromCslp)(cslp);
         import_fieldSchemaMap.FieldSchemaMap.clearContentTypeSchema(
           fieldMetadata.content_type_uid
@@ -53,7 +53,7 @@ async function handleRevalidateFieldData() {
     console.error("Error handling revalidate field data:", error);
     window.location.reload();
   } finally {
-    if (shouldRefocus && elementCslp) {
+    if (shouldRefocus && (0, import_cslp.isValidCslp)(elementCslp)) {
       await refocusElement(elementCslp, elementCslpUniqueId);
     }
   }

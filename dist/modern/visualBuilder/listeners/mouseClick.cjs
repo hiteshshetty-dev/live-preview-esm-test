@@ -37,6 +37,7 @@ __export(mouseClick_exports, {
 module.exports = __toCommonJS(mouseClick_exports);
 var import_handleIndividualFields = require("../utils/handleIndividualFields.cjs");
 var import_getCsDataOfElement = require("../utils/getCsDataOfElement.cjs");
+var import_cslp = require("../../cslp/index.cjs");
 var import_generateToolbar = require("../generators/generateToolbar.cjs");
 var import_generateOverlay = require("../generators/generateOverlay.cjs");
 var import_visualBuilderPostMessage = __toESM(require("../utils/visualBuilderPostMessage.cjs"), 1);
@@ -79,16 +80,19 @@ async function handleBuilderInteraction(params) {
   const eventTarget = params.event.target;
   const isAnchorElement = eventTarget instanceof HTMLAnchorElement;
   const elementHasCslp = eventTarget && (eventTarget.hasAttribute("data-cslp") || eventTarget.closest("[data-cslp]"));
-  const duplicates = document.querySelectorAll(
-    `[data-cslp="${eventTarget?.getAttribute("data-cslp")}"]`
-  );
-  if (duplicates.length > 1) {
-    duplicates.forEach((ele) => {
-      if (!ele.hasAttribute("data-cslp-unique-id")) {
-        const uniqueId = `cslp-${(0, import_uuid.v4)()}`;
-        ele.setAttribute("data-cslp-unique-id", uniqueId);
-      }
-    });
+  const eventTargetCslp = eventTarget?.getAttribute("data-cslp");
+  if ((0, import_cslp.isValidCslp)(eventTargetCslp)) {
+    const duplicates = document.querySelectorAll(
+      `[data-cslp="${eventTargetCslp}"]`
+    );
+    if (duplicates.length > 1) {
+      duplicates.forEach((ele) => {
+        if (!ele.hasAttribute("data-cslp-unique-id")) {
+          const uniqueId = `cslp-${(0, import_uuid.v4)()}`;
+          ele.setAttribute("data-cslp-unique-id", uniqueId);
+        }
+      });
+    }
   }
   if (eventTarget?.getAttribute("data-studio-ui") === "true") {
     return;

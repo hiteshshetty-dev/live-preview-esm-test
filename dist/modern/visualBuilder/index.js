@@ -20,7 +20,7 @@ import { VisualBuilderPostMessageEvents } from "./utils/types/postMessage.types.
 import { setup } from "goober";
 import { debounce, isEqual } from "lodash-es";
 import { h } from "preact";
-import { extractDetailsFromCslp } from "../cslp/index.js";
+import { extractDetailsFromCslp, isValidCslp } from "../cslp/index.js";
 import initUI from "./components/index.js";
 import { useDraftFieldsPostMessageEvent } from "./eventManager/useDraftFieldsPostMessageEvent.js";
 import { useHideFocusOverlayPostMessageEvent } from "./eventManager/useHideFocusOverlayPostMessageEvent.js";
@@ -99,7 +99,7 @@ var _VisualBuilder = class _VisualBuilder {
         this.handlePositionChange(editableElement);
       }
       const cslpData = editableElement && editableElement.getAttribute("data-cslp");
-      if (!editableElement || !cslpData) {
+      if (!editableElement || !isValidCslp(cslpData)) {
         return;
       }
       const fieldMetadata = extractDetailsFromCslp(cslpData);

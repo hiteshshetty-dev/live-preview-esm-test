@@ -1,2 +1,2 @@
-export { addCslpOutline, extractDetailsFromCslp } from './cslpdata.cjs';
+export { addCslpOutline, extractDetailsFromCslp, isValidCslp } from './cslpdata.cjs';
 import './types/cslp.types.cjs';

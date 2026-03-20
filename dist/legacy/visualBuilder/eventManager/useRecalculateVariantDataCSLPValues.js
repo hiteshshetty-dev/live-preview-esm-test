@@ -6,6 +6,7 @@ import livePreviewPostMessage from "../../livePreview/eventManager/livePreviewEv
 import { LIVE_PREVIEW_POST_MESSAGE_EVENTS } from "../../livePreview/eventManager/livePreviewEventManager.constant.js";
 import { DATA_CSLP_ATTR_SELECTOR } from "../utils/constants.js";
 import { visualBuilderStyles } from "../visualBuilder.style.js";
+import { isValidCslp } from "../../cslp/cslpdata.js";
 import { setHighlightVariantFields } from "./useVariantsPostMessageEvent.js";
 var VARIANT_UPDATE_DELAY_MS = 8e3;
 function useRecalculateVariantDataCSLPValues() {
@@ -25,7 +26,7 @@ function updateVariantClasses() {
   const variant = VisualBuilder.VisualBuilderGlobalState.value.variant;
   const observers = [];
   const updateElementClasses = (element, dataCslp, observer) => {
-    if (!dataCslp) return;
+    if (!isValidCslp(dataCslp)) return;
     if (dataCslp.startsWith("v2:") && !element.classList.contains("visual-builder__variant-field")) {
       if (element.classList.contains("visual-builder__base-field")) {
         element.classList.remove("visual-builder__base-field");
@@ -57,7 +58,7 @@ function updateVariantClasses() {
   };
   const addElementClasses = (element) => {
     const dataCslp = element.getAttribute(DATA_CSLP_ATTR_SELECTOR);
-    if (!dataCslp) {
+    if (!isValidCslp(dataCslp)) {
       element.childNodes.forEach((child) => {
         if (child instanceof HTMLElement) {
           addElementClasses(child);
