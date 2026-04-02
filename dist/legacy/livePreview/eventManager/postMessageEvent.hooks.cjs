@@ -139,7 +139,7 @@ function sendInitializeLivePreviewPostMessageEvent() {
   const initConfig = {
     shouldReload: config.ssr,
     href: window.location.href,
-    sdkVersion: "4.3.0",
+    sdkVersion: "4.4.0",
     mode: config.mode
   };
   if (config.enableLivePreviewOutsideIframe !== void 0) {

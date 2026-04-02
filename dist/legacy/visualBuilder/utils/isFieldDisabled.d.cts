@@ -26,11 +26,19 @@ declare const DisableReason: {
     readonly EntryUpdateRestrictedRoleAndWorkflowStage: ({ stageName, }: {
         stageName: string;
     }) => string;
+    readonly WorkflowStageRequestEdit: ({ stageName }: {
+        stageName: string;
+    }) => string;
+    readonly WorkflowStageRequestPending: ({ stageName }: {
+        stageName: string;
+    }) => string;
 };
 interface FieldDisableState {
     isDisabled: boolean;
     reason: string;
+    /** Canvas: workflow stage lock with request-edit UX (see fieldLabelWrapper). */
+    workflowRequestUi?: "request" | "pending";
 }
 declare const isFieldDisabled: (fieldSchemaMap: ISchemaFieldMap, eventFieldDetails: FieldDetails, resolvedVariantPermissions?: ResolvedVariantPermissions, entryPermissions?: EntryPermissions, entryWorkflowStageDetails?: WorkflowStageDetails) => FieldDisableState;
 
-export { DisableReason, isFieldDisabled };
+export { DisableReason, type FieldDisableState, isFieldDisabled };

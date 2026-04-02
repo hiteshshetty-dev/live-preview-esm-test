@@ -36,6 +36,10 @@ async function getWorkflowStageDetails({
       entry: {
         update: true
       }
+    },
+    requestEditAccess: {
+      canRequest: false,
+      hasPending: false
     }
   };
 }

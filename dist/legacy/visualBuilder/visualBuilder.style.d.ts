@@ -47,7 +47,12 @@ declare function visualBuilderStyles(): {
     "visual-builder__tooltip": string;
     "visual-builder__tooltip--bottom": string;
     "visual-builder__tooltip--persistent": string;
+    /** When the field label is near the top of the viewport, show the tooltip below the icon. */
+    "visual-builder__tooltip--persistent--below": string;
     "visual-builder__custom-tooltip": string;
+    "visual-builder__custom-tooltip--below": string;
+    /** Wider cap for workflow request / pending copy — must follow base `.visual-builder__custom-tooltip` so max-width wins over 200px. */
+    "visual-builder__custom-tooltip--workflow-access": string;
     "visual-builder__empty-block": string;
     "visual-builder__empty-block-title": string;
     "visual-builder__empty-block-field-name": string;

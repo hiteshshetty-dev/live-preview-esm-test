@@ -57,6 +57,7 @@ var VisualBuilderPostMessageEvents = /* @__PURE__ */ ((VisualBuilderPostMessageE
   VisualBuilderPostMessageEvents2["GET_PERMISSIONS"] = "get-permissions";
   VisualBuilderPostMessageEvents2["GET_WORKFLOW_STAGE_DETAILS"] = "get-workflow-stage-details";
   VisualBuilderPostMessageEvents2["GET_RESOLVED_VARIANT_PERMISSIONS"] = "get-resolved-variant-permissions";
+  VisualBuilderPostMessageEvents2["OPEN_REQUEST_EDIT_ACCESS"] = "open-request-edit-access";
   VisualBuilderPostMessageEvents2["GET_ALL_ENTRIES_IN_CURRENT_PAGE"] = "get-entries-in-current-page";
   VisualBuilderPostMessageEvents2["HIDE_FOCUS_OVERLAY"] = "hide-focus-overlay";
   VisualBuilderPostMessageEvents2["SHOW_DRAFT_FIELDS"] = "show-draft-fields";

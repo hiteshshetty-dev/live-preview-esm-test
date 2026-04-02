@@ -610,6 +610,22 @@ function visualBuilderStyles() {
                 display: none;
             }
         `,
+    /** When the field label is near the top of the viewport, show the tooltip below the icon. */
+    "visual-builder__tooltip--persistent--below": import_goober.css`
+            &:before {
+                bottom: -66px;
+                margin-bottom: 0;
+                margin-top: 0;
+                top: auto;
+            }
+
+            &:after {
+                bottom: -13px;
+                margin-top: 0;
+                top: auto;
+                transform: rotate(180deg);
+            }
+        `,
     "visual-builder__custom-tooltip": import_goober.css`
             position: absolute;
             bottom: 20px;
@@ -635,6 +651,20 @@ function visualBuilderStyles() {
                 border: 10px solid #000;
                 border-color: #767676 transparent transparent transparent;
             }
+        `,
+    "visual-builder__custom-tooltip--below": import_goober.css`
+            bottom: auto;
+            top: 100%;
+            margin-bottom: 0;
+            margin-top: 8px;
+
+            &:after {
+                content: none;
+            }
+        `,
+    /** Wider cap for workflow request / pending copy — must follow base `.visual-builder__custom-tooltip` so max-width wins over 200px. */
+    "visual-builder__custom-tooltip--workflow-access": import_goober.css`
+            max-width: 325px;
         `,
     "visual-builder__empty-block": import_goober.css`
             width: 100%;

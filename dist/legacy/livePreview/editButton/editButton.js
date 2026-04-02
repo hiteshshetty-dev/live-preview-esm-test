@@ -415,6 +415,8 @@ var LivePreviewEditButton = class {
 LivePreviewEditButton.livePreviewEditButton = null;
 effect(function handleWindowTypeChange() {
   if (typeof window === "undefined") return;
+  if (typeof process !== "undefined" && (process.env.PURGE_PREVIEW_SDK === "true" || process.env.REACT_APP_PURGE_PREVIEW_SDK === "true"))
+    return;
   Config.get().windowType;
   if (LivePreviewEditButton && !isOpeningInTimeline()) {
     toggleEditButtonElement();

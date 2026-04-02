@@ -81,6 +81,85 @@ async function getReferenceParentMap() {
     return {};
   }
 }
+var TOOLTIP_VIEWPORT_TOP_CLEARANCE_PX = 148;
+function FieldLabelDisabledIcon(props) {
+  const {
+    reason,
+    workflowRequestUi,
+    usePlainDataTooltip,
+    onLinkVariant,
+    onRequestEditAccess
+  } = props;
+  const wrapRef = (0, import_compat.useRef)(null);
+  const [showTooltipBelow, setShowTooltipBelow] = (0, import_compat.useState)(false);
+  const updateTooltipPlacement = () => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const { top } = el.getBoundingClientRect();
+    setShowTooltipBelow(top < TOOLTIP_VIEWPORT_TOP_CLEARANCE_PX);
+  };
+  const customTooltipClass = (0, import_classnames.default)(
+    (0, import_visualBuilder.visualBuilderStyles)()["visual-builder__custom-tooltip"],
+    showTooltipBelow && (0, import_visualBuilder.visualBuilderStyles)()["visual-builder__custom-tooltip--below"]
+  );
+  const workflowAccessTooltipClass = (0, import_classnames.default)(
+    (0, import_visualBuilder.visualBuilderStyles)()["visual-builder__custom-tooltip"],
+    showTooltipBelow && (0, import_visualBuilder.visualBuilderStyles)()["visual-builder__custom-tooltip--below"],
+    (0, import_visualBuilder.visualBuilderStyles)()["visual-builder__custom-tooltip--workflow-access"]
+  );
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
+    "div",
+    {
+      ref: wrapRef,
+      onMouseEnter: updateTooltipPlacement,
+      className: (0, import_classnames.default)(
+        (0, import_visualBuilder.visualBuilderStyles)()["visual-builder__tooltip--persistent"],
+        showTooltipBelow && (0, import_visualBuilder.visualBuilderStyles)()["visual-builder__tooltip--persistent--below"]
+      ),
+      "data-tooltip": usePlainDataTooltip ? reason : void 0,
+      children: [
+        (reason == null ? void 0 : reason.includes(import_isFieldDisabled.DisableReason.CanLinkVariant)) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: customTooltipClass, onClick: onLinkVariant, children: (() => {
+          const [before, after] = reason.split(
+            import_isFieldDisabled.DisableReason.UnderlinedAndClickableWord
+          );
+          return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+            before,
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { textDecoration: "underline" }, children: import_isFieldDisabled.DisableReason.UnderlinedAndClickableWord }),
+            after
+          ] });
+        })() }) : null,
+        workflowRequestUi === "request" && reason ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: workflowAccessTooltipClass, children: [
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: reason }),
+          " ",
+          /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+            "span",
+            {
+              role: "button",
+              tabIndex: 0,
+              style: {
+                textDecoration: "underline",
+                cursor: "pointer"
+              },
+              onClick: (e) => {
+                e.stopPropagation();
+                onRequestEditAccess();
+              },
+              onKeyDown: (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onRequestEditAccess();
+                }
+              },
+              children: "Request Edit Access"
+            }
+          )
+        ] }) : null,
+        workflowRequestUi === "pending" && reason ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: workflowAccessTooltipClass, children: reason }) : null,
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_icons.InfoIcon, {})
+      ]
+    }
+  );
+}
 function FieldLabelWrapperComponent(props) {
   const { eventDetails } = props;
   const [currentField, setCurrentField] = (0, import_compat.useState)({
@@ -161,13 +240,36 @@ function FieldLabelWrapperComponent(props) {
         variantUid: props.fieldMetadata.variant,
         fieldPathWithIndex: props.fieldMetadata.fieldPathWithIndex
       });
-      const { isDisabled: fieldDisabled, reason } = (0, import_isFieldDisabled.isFieldDisabled)(
+      const {
+        isDisabled: fieldDisabled,
+        reason,
+        workflowRequestUi
+      } = (0, import_isFieldDisabled.isFieldDisabled)(
         fieldSchema,
         eventDetails,
         resolvedVariantPermissions,
         entryAcl,
         entryWorkflowStageDetails
       );
+      const handleRequestEditAccess = async () => {
+        var _a2;
+        try {
+          await ((_a2 = import_visualBuilderPostMessage.default) == null ? void 0 : _a2.send(
+            import_postMessage.VisualBuilderPostMessageEvents.OPEN_REQUEST_EDIT_ACCESS,
+            {
+              entryUid: props.fieldMetadata.entry_uid,
+              contentTypeUid: props.fieldMetadata.content_type_uid,
+              locale: props.fieldMetadata.locale,
+              variantUid: props.fieldMetadata.variant
+            }
+          ));
+        } catch (error2) {
+          console.error(
+            "Error opening request edit access flow:",
+            error2
+          );
+        }
+      };
       const handleLinkVariant = async () => {
         var _a2, _b2;
         try {
@@ -195,36 +297,18 @@ function FieldLabelWrapperComponent(props) {
       const currentFieldDisplayName = (displayNames2 == null ? void 0 : displayNames2[props.fieldMetadata.cslpValue]) ?? fieldSchema.display_name;
       const hasParentPaths = !!((_a = props == null ? void 0 : props.parentPaths) == null ? void 0 : _a.length);
       const isVariant = props.fieldMetadata.variant ? true : false;
+      const usePlainDataTooltip = reason && !reason.includes(import_isFieldDisabled.DisableReason.CanLinkVariant) && workflowRequestUi == null;
       setCurrentField({
         text: currentFieldDisplayName,
         contentTypeName: contentTypeName ?? "",
-        icon: fieldDisabled ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
-          "div",
+        icon: fieldDisabled ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+          FieldLabelDisabledIcon,
           {
-            className: (0, import_classnames.default)(
-              (0, import_visualBuilder.visualBuilderStyles)()["visual-builder__tooltip--persistent"]
-            ),
-            "data-tooltip": !(reason == null ? void 0 : reason.includes(import_isFieldDisabled.DisableReason.CanLinkVariant)) ? reason : void 0,
-            children: [
-              reason.includes(import_isFieldDisabled.DisableReason.CanLinkVariant) && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-                "div",
-                {
-                  className: (0, import_visualBuilder.visualBuilderStyles)()["visual-builder__custom-tooltip"],
-                  onClick: handleLinkVariant,
-                  children: (() => {
-                    const [before, after] = reason.split(
-                      import_isFieldDisabled.DisableReason.UnderlinedAndClickableWord
-                    );
-                    return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-                      before,
-                      /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { textDecoration: "underline" }, children: import_isFieldDisabled.DisableReason.UnderlinedAndClickableWord }),
-                      after
-                    ] });
-                  })()
-                }
-              ),
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_icons.InfoIcon, {})
-            ]
+            reason,
+            ...workflowRequestUi != null ? { workflowRequestUi } : {},
+            usePlainDataTooltip: Boolean(usePlainDataTooltip),
+            onLinkVariant: handleLinkVariant,
+            onRequestEditAccess: handleRequestEditAccess
           }
         ) : hasParentPaths ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_icons.CaretIcon, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, {}),
         isReference,

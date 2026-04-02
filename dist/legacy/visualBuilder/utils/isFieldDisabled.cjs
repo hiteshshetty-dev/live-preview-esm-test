@@ -52,9 +52,12 @@ var DisableReason = {
   WorkflowStagePermission: ({ stageName }) => `You do not have Edit access to this entry on the '${stageName}' workflow stage`,
   EntryUpdateRestrictedRoleAndWorkflowStage: ({
     stageName
-  }) => `Editing is restricted for your role or by the rules for the '${stageName}' stage. Contact your admin for edit access.`
+  }) => `Editing is restricted for your role or by the rules for the '${stageName}' stage. Contact your admin for edit access.`,
+  WorkflowStageRequestEdit: ({ stageName }) => `You do not have the edit access to this entry on the '${stageName}' workflow stage.`,
+  WorkflowStageRequestPending: ({ stageName }) => `You do not have the edit access to this entry on the '${stageName}' workflow stage. Your request has been sent and is awaiting approval.`
 };
 var getDisableReason = (flags, params) => {
+  var _a;
   if (flags.updateRestrictDueToRole) return DisableReason.ReadOnly;
   if (flags.updateRestrictDueToNonLocalizableFields)
     return DisableReason.LocalizedEntry;
@@ -76,8 +79,23 @@ var getDisableReason = (flags, params) => {
     return DisableReason.EntryUpdateRestricted;
   }
   if (flags.updateRestrictDueToWorkflowStagePermission) {
+    const stageName = (params == null ? void 0 : params.stageName) ? params.stageName : "Unknown";
+    const req = (_a = params == null ? void 0 : params.entryWorkflowStageDetails) == null ? void 0 : _a.requestEditAccess;
+    const entryAllowsUpdate = (params == null ? void 0 : params.entryPermissions) == null || params.entryPermissions.update === true;
+    if (entryAllowsUpdate && !flags.updateRestrictDueToEntryUpdateRestriction && req) {
+      if (req.hasPending) {
+        return DisableReason.WorkflowStageRequestPending({
+          stageName
+        });
+      }
+      if (req.canRequest) {
+        return DisableReason.WorkflowStageRequestEdit({
+          stageName
+        });
+      }
+    }
     return DisableReason.WorkflowStagePermission({
-      stageName: (params == null ? void 0 : params.stageName) ? params.stageName : "Unknown"
+      stageName
     });
   }
   if (flags.updateRestrictDueToResolvedVariantPermissions) {
@@ -129,10 +147,27 @@ var isFieldDisabled = (fieldSchemaMap, eventFieldDetails, resolvedVariantPermiss
     }
   }
   const isDisabled = Object.values(flags).some(Boolean);
-  const reason = getDisableReason(flags, {
-    stageName: (_d = entryWorkflowStageDetails == null ? void 0 : entryWorkflowStageDetails.stage) == null ? void 0 : _d.name
-  });
-  return { isDisabled, reason };
+  const getDisableReasonParams = {};
+  if (((_d = entryWorkflowStageDetails == null ? void 0 : entryWorkflowStageDetails.stage) == null ? void 0 : _d.name) !== void 0) {
+    getDisableReasonParams.stageName = entryWorkflowStageDetails.stage.name;
+  }
+  if (entryWorkflowStageDetails !== void 0) {
+    getDisableReasonParams.entryWorkflowStageDetails = entryWorkflowStageDetails;
+  }
+  if (entryPermissions !== void 0) {
+    getDisableReasonParams.entryPermissions = entryPermissions;
+  }
+  const reason = getDisableReason(flags, getDisableReasonParams);
+  let workflowRequestUi;
+  if (flags.updateRestrictDueToWorkflowStagePermission && !flags.updateRestrictDueToEntryUpdateRestriction && (entryPermissions == null || entryPermissions.update === true) && (entryWorkflowStageDetails == null ? void 0 : entryWorkflowStageDetails.requestEditAccess)) {
+    const req = entryWorkflowStageDetails.requestEditAccess;
+    if (req.hasPending) {
+      workflowRequestUi = "pending";
+    } else if (req.canRequest) {
+      workflowRequestUi = "request";
+    }
+  }
+  return workflowRequestUi !== void 0 ? { isDisabled, reason, workflowRequestUi } : { isDisabled, reason };
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
