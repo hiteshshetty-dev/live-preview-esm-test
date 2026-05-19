@@ -229,10 +229,12 @@ var throttledMouseHover = throttle(async (params) => {
         customCursor: params.customCursor
       });
     }
-    generateCursor({
-      eventDetails,
-      customCursor: params.customCursor
-    });
+    if (VisualBuilder.VisualBuilderGlobalState.value.previousHoveredTargetDOM !== editableElement) {
+      generateCursor({
+        eventDetails,
+        customCursor: params.customCursor
+      });
+    }
     handleCursorPosition(params.event, params.customCursor);
     showCustomCursor(params.customCursor);
   }
