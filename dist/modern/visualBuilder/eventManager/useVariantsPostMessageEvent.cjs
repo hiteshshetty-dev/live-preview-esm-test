@@ -156,14 +156,8 @@ function useVariantFieldsPostMessageEvent({ isSSR }) {
         if (selectedVariant) {
           addVariantFieldClass(selectedVariant);
         }
-        import_visualBuilderPostMessage.default?.send(
-          import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
-        );
       } else {
         (0, import_useRecalculateVariantDataCSLPValues.updateVariantClasses)();
-        import_visualBuilderPostMessage.default?.send(
-          import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
-        );
       }
     }
   );

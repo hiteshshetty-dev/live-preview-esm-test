@@ -3,6 +3,7 @@ import "../chunk-5WRI5ZAA.js";
 // src/preview/contentstack-live-preview-HOC.ts
 import { cloneDeep, isEmpty, pick } from "lodash-es";
 import { v4 as uuidv4 } from "uuid";
+import { inIframe } from "../common/inIframe.js";
 import { getUserInitData } from "../configManager/config.default.js";
 import Config, { updateConfigFromUrl } from "../configManager/configManager.js";
 import LivePreview from "../livePreview/live-preview.js";
@@ -11,6 +12,10 @@ import { removeFromOnChangeSubscribers } from "../livePreview/removeFromOnChange
 import { PublicLogger } from "../logger/logger.js";
 import { handleWebCompare } from "../timeline/compare/compare.js";
 import { VisualBuilder } from "../visualBuilder/index.js";
+import visualBuilderPostMessage from "../visualBuilder/utils/visualBuilderPostMessage.js";
+import {
+  VisualBuilderPostMessageEvents
+} from "../visualBuilder/utils/types/postMessage.types.js";
 var _ContentstackLivePreview = class _ContentstackLivePreview {
   /**
    * Initializes the Live Preview SDK with the provided user configuration.
@@ -189,6 +194,30 @@ var _ContentstackLivePreview = class _ContentstackLivePreview {
     _ContentstackLivePreview.previewConstructors.livePreview.unsubscribeOnEntryChange(
       callback
     );
+  }
+  /**
+   * Sets the page-level entry context for the current page.
+   * Used by the Visual Builder "Start Editing" button to know which entry
+   * the current page is rendering, enabling accurate VB navigation.
+   *
+   * Place this call alongside your existing `addEditableTags` call — both
+   * reference the same `entry` object so there is no extra lookup.
+   *
+   * @example
+   * ```js
+   * // In your page component / useEffect
+   * Utils.addEditableTags(entry, "blog_post", true, "en-us");
+   * ContentstackLivePreview.setPageContext({ entryUid: entry.uid, contentTypeUid: "blog_post" });
+   * ```
+   */
+  static setPageContext(context) {
+    Config.set("pageContext", context);
+    if (inIframe()) {
+      visualBuilderPostMessage?.send(
+        VisualBuilderPostMessageEvents.PAGE_CONTEXT,
+        { entryUid: context.entryUid, contentTypeUid: context.contentTypeUid }
+      );
+    }
   }
   /**
    * Retrieves the version of the SDK.

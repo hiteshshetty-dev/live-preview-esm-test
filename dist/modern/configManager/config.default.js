@@ -102,7 +102,8 @@ function getDefaultConfig() {
       },
       payload: []
     },
-    enableLivePreviewOutsideIframe: void 0
+    enableLivePreviewOutsideIframe: void 0,
+    pageContext: null
   };
 }
 export {

@@ -123,7 +123,8 @@ function getDefaultConfig() {
       },
       payload: []
     },
-    enableLivePreviewOutsideIframe: void 0
+    enableLivePreviewOutsideIframe: void 0,
+    pageContext: null
   };
 }
 // Annotate the CommonJS export names for ESM import in node:

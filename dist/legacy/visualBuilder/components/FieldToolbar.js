@@ -446,7 +446,7 @@ function FieldToolbarComponent(props) {
                     isModalEditable ? editButton : null,
                     isReplaceAllowed ? replaceButton : null,
                     formButton,
-                    fieldSchema && !disableFieldActions ? /* @__PURE__ */ jsx(
+                    fieldSchema ? /* @__PURE__ */ jsx(
                       CommentIcon,
                       {
                         fieldMetadata,
@@ -455,7 +455,7 @@ function FieldToolbarComponent(props) {
                       }
                     ) : null
                   ] }),
-                  !disableFieldActions && /* @__PURE__ */ jsx(
+                  /* @__PURE__ */ jsx(
                     FieldLocationIcon,
                     {
                       fieldLocationData,

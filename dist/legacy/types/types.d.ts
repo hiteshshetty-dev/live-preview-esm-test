@@ -58,6 +58,10 @@ declare enum ILivePreviewWindowType {
     BUILDER = "builder",
     INDEPENDENT = "independent"
 }
+declare interface IPageContext {
+    entryUid: string;
+    contentTypeUid: string;
+}
 declare interface IConfig {
     ssr: boolean;
     enable: boolean;
@@ -81,6 +85,7 @@ declare interface IConfig {
     };
     collab: ICollabConfig["collab"];
     enableLivePreviewOutsideIframe: boolean | undefined;
+    pageContext: IPageContext | null;
 }
 declare interface IConfigEditInVisualBuilderButton {
     enable: boolean;
@@ -125,4 +130,4 @@ interface IVisualBuilderInitEvent {
 }
 type IExportedConfig = Pick<IConfig, "ssr" | "enable" | "cleanCslpOnProduction" | "stackDetails" | "clientUrlParams" | "windowType" | "hash" | "editButton" | "mode">;
 
-export { type IClientUrlParams, type IConfig, type IConfigEditButton, type IConfigEditInVisualBuilderButton, type IEditButtonPosition, type IEditEntrySearchParams, type IExportedConfig, type IInitData, type IInitStackDetails, type ILivePreviewMessageCommon, type ILivePreviewMode, ILivePreviewModeConfig, ILivePreviewWindowType, type IStackDetails, type IStackSdk, type IVisualBuilderInitEvent };
+export { type IClientUrlParams, type IConfig, type IConfigEditButton, type IConfigEditInVisualBuilderButton, type IEditButtonPosition, type IEditEntrySearchParams, type IExportedConfig, type IInitData, type IInitStackDetails, type ILivePreviewMessageCommon, type ILivePreviewMode, ILivePreviewModeConfig, ILivePreviewWindowType, type IPageContext, type IStackDetails, type IStackSdk, type IVisualBuilderInitEvent };

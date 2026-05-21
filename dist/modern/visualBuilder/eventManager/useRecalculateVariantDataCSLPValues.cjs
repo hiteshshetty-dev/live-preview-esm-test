@@ -41,15 +41,7 @@ var import_constants = require("../utils/constants.cjs");
 var import_visualBuilder = require("../visualBuilder.style.cjs");
 var import_cslpdata = require("../../cslp/cslpdata.cjs");
 var import_useVariantsPostMessageEvent = require("./useVariantsPostMessageEvent.cjs");
-var import_visualBuilderPostMessage = __toESM(require("../utils/visualBuilderPostMessage.cjs"), 1);
-var import_postMessage = require("../utils/types/postMessage.types.cjs");
-var import_lodash_es = require("lodash-es");
 var VARIANT_UPDATE_DELAY_MS = 8e3;
-var requestDiscussionHighlights = (0, import_lodash_es.debounce)(() => {
-  import_visualBuilderPostMessage.default?.send(
-    import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
-  );
-}, 200);
 function useRecalculateVariantDataCSLPValues() {
   import_livePreviewEventManager.default?.on(
     import_livePreviewEventManager2.LIVE_PREVIEW_POST_MESSAGE_EVENTS.VARIANT_PATCH,
@@ -152,7 +144,6 @@ function updateVariantClasses() {
             import_constants.DATA_CSLP_ATTR_SELECTOR
           );
           updateElementClasses(element, dataCslp || "", observer);
-          requestDiscussionHighlights();
         }
       });
     });

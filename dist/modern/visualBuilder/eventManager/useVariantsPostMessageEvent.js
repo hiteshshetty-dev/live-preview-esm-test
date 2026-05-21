@@ -115,14 +115,8 @@ function useVariantFieldsPostMessageEvent({ isSSR }) {
         if (selectedVariant) {
           addVariantFieldClass(selectedVariant);
         }
-        visualBuilderPostMessage?.send(
-          VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
-        );
       } else {
         updateVariantClasses();
-        visualBuilderPostMessage?.send(
-          VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
-        );
       }
     }
   );

@@ -268,12 +268,10 @@ var throttledMouseHover = (0, import_lodash_es.throttle)(async (params) => {
         customCursor: params.customCursor
       });
     }
-    if (import__.VisualBuilder.VisualBuilderGlobalState.value.previousHoveredTargetDOM !== editableElement) {
-      generateCursor({
-        eventDetails,
-        customCursor: params.customCursor
-      });
-    }
+    generateCursor({
+      eventDetails,
+      customCursor: params.customCursor
+    });
     handleCursorPosition(params.event, params.customCursor);
     showCustomCursor(params.customCursor);
   }

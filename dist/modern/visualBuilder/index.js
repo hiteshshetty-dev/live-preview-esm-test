@@ -249,10 +249,15 @@ var _VisualBuilder = class _VisualBuilder {
     if (!config.enable || config.mode < ILivePreviewModeConfig.BUILDER) {
       return;
     }
-    visualBuilderPostMessage?.send("init", {
+    const pageCtx = config.pageContext;
+    const windowCtx = window.__CS_PAGE_CONTEXT__;
+    const initPayload = {
       isSSR: config.ssr,
-      href: window.location.href
-    }).then((data) => {
+      href: window.location.href,
+      entry_uid: pageCtx?.entryUid ?? windowCtx?.entryUid ?? (document.querySelector('meta[name="contentstack:entry-uid"]')?.getAttribute("content") || void 0),
+      content_type_uid: pageCtx?.contentTypeUid ?? windowCtx?.contentTypeUid ?? (document.querySelector('meta[name="contentstack:content-type-uid"]')?.getAttribute("content") || void 0)
+    };
+    visualBuilderPostMessage?.send("init", initPayload).then((data) => {
       const {
         windowType = ILivePreviewWindowType.BUILDER,
         stackDetails,

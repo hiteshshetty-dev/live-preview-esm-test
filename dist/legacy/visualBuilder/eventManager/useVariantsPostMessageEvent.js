@@ -110,7 +110,6 @@ function useVariantFieldsPostMessageEvent({ isSSR }) {
   (_a = visualBuilderPostMessage) == null ? void 0 : _a.on(
     VisualBuilderPostMessageEvents.GET_VARIANT_ID,
     (event) => {
-      var _a2, _b2;
       const selectedVariant = event.data.variant;
       setVariant(selectedVariant);
       FieldSchemaMap.clear();
@@ -118,14 +117,8 @@ function useVariantFieldsPostMessageEvent({ isSSR }) {
         if (selectedVariant) {
           addVariantFieldClass(selectedVariant);
         }
-        (_a2 = visualBuilderPostMessage) == null ? void 0 : _a2.send(
-          VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
-        );
       } else {
         updateVariantClasses();
-        (_b2 = visualBuilderPostMessage) == null ? void 0 : _b2.send(
-          VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
-        );
       }
     }
   );

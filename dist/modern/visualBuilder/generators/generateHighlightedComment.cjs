@@ -98,8 +98,6 @@ function updateHighlightedCommentIconPosition() {
           const { top, left } = targetElement.getBoundingClientRect();
           icon.style.top = `${top - highlighCommentOffset}px`;
           icon.style.left = `${left - highlighCommentOffset}px`;
-        } else {
-          icon.remove();
         }
       }
     }

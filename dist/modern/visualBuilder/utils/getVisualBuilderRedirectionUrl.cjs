@@ -59,6 +59,16 @@ function getVisualBuilderRedirectionUrl() {
   if (localeToUse) {
     searchParams.set("locale", localeToUse);
   }
+  const pageContext = import_configManager.default.get().pageContext;
+  const windowContext = window.__CS_PAGE_CONTEXT__;
+  const entryUid = pageContext?.entryUid ?? windowContext?.entryUid ?? document.querySelector('meta[name="contentstack:entry-uid"]')?.getAttribute("content");
+  const contentTypeUid = pageContext?.contentTypeUid ?? windowContext?.contentTypeUid ?? document.querySelector('meta[name="contentstack:content-type-uid"]')?.getAttribute("content");
+  if (entryUid) {
+    searchParams.set("entry_uid", entryUid);
+  }
+  if (contentTypeUid) {
+    searchParams.set("content_type_uid", contentTypeUid);
+  }
   const completeURL = new URL(
     `/#!/stack/${apiKey}/visual-editor?${searchParams.toString()}`,
     appUrl
