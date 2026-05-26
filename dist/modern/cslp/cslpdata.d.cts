@@ -32,11 +32,6 @@ declare function isValidCslp(cslpValue: string | null | undefined): cslpValue is
  * @returns An object containing the extracted details.
  */
 declare function extractDetailsFromCslp(cslpValue: string): CslpData;
-/**
- * Adds an outline to the clicked element and triggers a callback function.
- * @param e - The MouseEvent object representing the click event.
- * @param callback - An optional callback function that will be called with the CSLP tag and highlighted element as arguments.
- */
 declare function addCslpOutline(e: MouseEvent, callback?: (args: {
     cslpTag: string;
     highlightedElement: HTMLElement;

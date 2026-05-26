@@ -4,7 +4,6 @@ import "../../chunk-5WRI5ZAA.js";
 import Config from "../../configManager/configManager.js";
 import { extractDetailsFromCslp, isValidCslp } from "../../cslp/index.js";
 function getVisualBuilderRedirectionUrl() {
-  var _a, _b;
   const { stackDetails, clientUrlParams } = Config.get();
   const { branch, apiKey, environment, locale } = stackDetails;
   const { url: appUrl } = clientUrlParams;
@@ -27,16 +26,6 @@ function getVisualBuilderRedirectionUrl() {
   }
   if (localeToUse) {
     searchParams.set("locale", localeToUse);
-  }
-  const pageContext = Config.get().pageContext;
-  const windowContext = window.__CS_PAGE_CONTEXT__;
-  const entryUid = (pageContext == null ? void 0 : pageContext.entryUid) ?? (windowContext == null ? void 0 : windowContext.entryUid) ?? ((_a = document.querySelector('meta[name="contentstack:entry-uid"]')) == null ? void 0 : _a.getAttribute("content"));
-  const contentTypeUid = (pageContext == null ? void 0 : pageContext.contentTypeUid) ?? (windowContext == null ? void 0 : windowContext.contentTypeUid) ?? ((_b = document.querySelector('meta[name="contentstack:content-type-uid"]')) == null ? void 0 : _b.getAttribute("content"));
-  if (entryUid) {
-    searchParams.set("entry_uid", entryUid);
-  }
-  if (contentTypeUid) {
-    searchParams.set("content_type_uid", contentTypeUid);
   }
   const completeURL = new URL(
     `/#!/stack/${apiKey}/visual-editor?${searchParams.toString()}`,

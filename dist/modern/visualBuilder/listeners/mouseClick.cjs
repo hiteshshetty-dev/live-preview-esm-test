@@ -56,6 +56,8 @@ var import_generateThread3 = require("../generators/generateThread.cjs");
 var import_collabUtils = require("../utils/collabUtils.cjs");
 var import_uuid = require("uuid");
 var import_fetchEntryPermissionsAndStageDetails = require("../utils/fetchEntryPermissionsAndStageDetails.cjs");
+var import_isCustomFieldMultipleInstance = require("../utils/isCustomFieldMultipleInstance.cjs");
+var import_getWholeFieldElement = require("../utils/getWholeFieldElement.cjs");
 function addOverlay(params) {
   if (!params.overlayWrapper || !params.editableElement) return;
   (0, import_generateOverlay.addFocusOverlay)(
@@ -142,6 +144,30 @@ async function handleBuilderInteraction(params) {
     return;
   }
   const { editableElement, fieldMetadata } = eventDetails;
+  const { content_type_uid, fieldPath } = fieldMetadata;
+  if (import_fieldSchemaMap.FieldSchemaMap.hasFieldSchema(content_type_uid, fieldPath)) {
+    const fieldSchemaForCheck = await import_fieldSchemaMap.FieldSchemaMap.getFieldSchema(content_type_uid, fieldPath);
+    if (fieldSchemaForCheck && (0, import_isCustomFieldMultipleInstance.isCustomFieldMultipleInstance)(fieldSchemaForCheck, fieldMetadata)) {
+      const parentCslp = (0, import_getWholeFieldElement.getParentCslp)(fieldMetadata.cslpValue);
+      const wholeFieldElement = (0, import_getWholeFieldElement.getWholeFieldElement)(editableElement, parentCslp);
+      if (wholeFieldElement) {
+        wholeFieldElement.dispatchEvent(
+          new MouseEvent("click", {
+            bubbles: true,
+            cancelable: true,
+            clientX: params.event.clientX,
+            clientY: params.event.clientY
+          })
+        );
+      } else if (config.debug) {
+        console.debug(
+          "[Visual Builder] Custom field multiple instance: whole-field parent not found in DOM for CSLP",
+          parentCslp
+        );
+      }
+      return;
+    }
+  }
   const variantStatus = await (0, import_FieldRevertComponent.getFieldVariantStatus)(fieldMetadata);
   const isVariant = variantStatus ? Object.values(variantStatus).some((value) => value === true) : false;
   cleanResidualsIfNeeded(params, editableElement);

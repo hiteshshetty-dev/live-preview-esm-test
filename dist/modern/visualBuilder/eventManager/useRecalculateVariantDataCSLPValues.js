@@ -8,7 +8,15 @@ import { DATA_CSLP_ATTR_SELECTOR } from "../utils/constants.js";
 import { visualBuilderStyles } from "../visualBuilder.style.js";
 import { isValidCslp } from "../../cslp/cslpdata.js";
 import { setHighlightVariantFields } from "./useVariantsPostMessageEvent.js";
+import visualBuilderPostMessage from "../utils/visualBuilderPostMessage.js";
+import { VisualBuilderPostMessageEvents } from "../utils/types/postMessage.types.js";
+import { debounce } from "lodash-es";
 var VARIANT_UPDATE_DELAY_MS = 8e3;
+var requestDiscussionHighlights = debounce(() => {
+  visualBuilderPostMessage?.send(
+    VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
+  );
+}, 200);
 function useRecalculateVariantDataCSLPValues() {
   livePreviewPostMessage?.on(
     LIVE_PREVIEW_POST_MESSAGE_EVENTS.VARIANT_PATCH,
@@ -111,6 +119,7 @@ function updateVariantClasses() {
             DATA_CSLP_ATTR_SELECTOR
           );
           updateElementClasses(element, dataCslp || "", observer);
+          requestDiscussionHighlights();
         }
       });
     });

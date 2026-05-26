@@ -104,7 +104,19 @@ function getMultipleFieldMetadata(content_type_uid, entry_uid, locale, fieldPath
     index: isNil(index) ? -1 : +index
   };
 }
+function highlightCslpElement(element, cslpTag, elements, callback) {
+  if (elements.highlightedElement)
+    elements.highlightedElement.classList.remove(
+      cslpTagStyles()["cslp-edit-mode"]
+    );
+  element.classList.add(cslpTagStyles()["cslp-edit-mode"]);
+  const updatedElements = elements;
+  updatedElements.highlightedElement = element;
+  Config.set("elements", updatedElements);
+  callback == null ? void 0 : callback({ cslpTag, highlightedElement: element });
+}
 function addCslpOutline(e, callback) {
+  var _a;
   const elements = Config.get().elements;
   let trigger = true;
   const eventTargets = e.composedPath();
@@ -114,21 +126,23 @@ function addCslpOutline(e, callback) {
     if (typeof (element == null ? void 0 : element.getAttribute) !== "function") continue;
     const cslpTag = element.getAttribute("data-cslp");
     if (trigger && isValidCslp(cslpTag)) {
-      if (elements.highlightedElement)
-        elements.highlightedElement.classList.remove(
-          cslpTagStyles()["cslp-edit-mode"]
-        );
-      element.classList.add(cslpTagStyles()["cslp-edit-mode"]);
-      const updatedElements = elements;
-      updatedElements.highlightedElement = element;
-      Config.set("elements", updatedElements);
-      callback == null ? void 0 : callback({
-        cslpTag,
-        highlightedElement: element
-      });
+      highlightCslpElement(element, cslpTag, elements, callback);
       trigger = false;
     } else if (!trigger) {
       element.classList.remove(cslpTagStyles()["cslp-edit-mode"]);
+    }
+  }
+  if (trigger && ((_a = Config.get().overlayPropagation) == null ? void 0 : _a.enable)) {
+    const pointElements = document.elementsFromPoint(e.clientX, e.clientY);
+    for (const el of pointElements) {
+      const element = el;
+      if (element.nodeName === "BODY") break;
+      if (typeof (element == null ? void 0 : element.getAttribute) !== "function") continue;
+      const cslpTag = element.getAttribute("data-cslp");
+      if (isValidCslp(cslpTag)) {
+        highlightCslpElement(element, cslpTag, elements, callback);
+        break;
+      }
     }
   }
 }

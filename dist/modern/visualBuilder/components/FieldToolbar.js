@@ -39,6 +39,7 @@ import {
 import { LoadingIcon } from "./icons/loading.js";
 import { FieldLocationAppList } from "./FieldLocationAppList.js";
 import { FieldLocationIcon } from "./FieldLocationIcon.js";
+import { isCustomFieldMultipleInstance as checkIsCustomFieldMultipleInstance } from "../utils/isCustomFieldMultipleInstance.js";
 import { Fragment, jsx, jsxs } from "preact/jsx-runtime";
 var TOOLTIP_TOP_EDGE_BUFFER = 96;
 function handleReplaceAsset(fieldMetadata) {
@@ -113,6 +114,8 @@ function FieldToolbarComponent(props) {
   let isWholeMultipleField = false;
   const APP_LIST_MIN_WIDTH = 230;
   let disableFieldActions = false;
+  let isCustomFieldMultipleInstance = false;
+  let isCustomFieldWholeMultiple = false;
   if (fieldSchema) {
     const { isDisabled } = isFieldDisabled(
       fieldSchema,
@@ -131,7 +134,13 @@ function FieldToolbarComponent(props) {
     if (fieldType === FieldDataType.REFERENCE)
       isMultiple = fieldSchema.field_metadata.ref_multiple;
     isWholeMultipleField = isMultiple && (fieldMetadata.fieldPathWithIndex === fieldMetadata.instance.fieldPathWithIndex || fieldMetadata.multipleFieldMetadata?.index === -1);
-    isModalEditable = ALLOWED_MODAL_EDITABLE_FIELD.includes(fieldType) && !isWholeMultipleField;
+    isCustomFieldMultipleInstance = checkIsCustomFieldMultipleInstance(fieldSchema, fieldMetadata);
+    isCustomFieldWholeMultiple = fieldType === FieldDataType.CUSTOM_FIELD && isMultiple && isWholeMultipleField;
+    if (isCustomFieldWholeMultiple) {
+      isModalEditable = true;
+    } else {
+      isModalEditable = ALLOWED_MODAL_EDITABLE_FIELD.includes(fieldType) && !isWholeMultipleField;
+    }
     isReplaceAllowed = ALLOWED_REPLACE_FIELDS.includes(fieldType) && !isWholeMultipleField;
   }
   const domEditStack = getDOMEditStack(eventDetails.editableElement);
@@ -324,6 +333,28 @@ function FieldToolbarComponent(props) {
       [visualBuilderStyles()["visual-builder__tooltip--bottom"]]: invertTooltipPosition
     }
   );
+  if (isCustomFieldMultipleInstance) {
+    return /* @__PURE__ */ jsx(
+      "div",
+      {
+        className: classNames(
+          "visual-builder__field-toolbar-container",
+          visualBuilderStyles()["visual-builder__field-toolbar-container"]
+        ),
+        children: /* @__PURE__ */ jsx(
+          "div",
+          {
+            className: classNames(
+              "visual-builder__custom-field-instance-message",
+              visualBuilderStyles()["visual-builder__custom-field-instance-message"]
+            ),
+            "data-testid": "visual-builder__custom-field-instance-message",
+            children: "You're on a custom field item. Select the entire custom field to edit or manage it."
+          }
+        )
+      }
+    );
+  }
   return /* @__PURE__ */ jsxs(
     "div",
     {
@@ -438,7 +469,7 @@ function FieldToolbarComponent(props) {
                     isModalEditable ? editButton : null,
                     isReplaceAllowed ? replaceButton : null,
                     formButton,
-                    fieldSchema ? /* @__PURE__ */ jsx(
+                    fieldSchema && !disableFieldActions ? /* @__PURE__ */ jsx(
                       CommentIcon,
                       {
                         fieldMetadata,
@@ -447,7 +478,7 @@ function FieldToolbarComponent(props) {
                       }
                     ) : null
                   ] }),
-                  /* @__PURE__ */ jsx(
+                  !disableFieldActions && /* @__PURE__ */ jsx(
                     FieldLocationIcon,
                     {
                       fieldLocationData,

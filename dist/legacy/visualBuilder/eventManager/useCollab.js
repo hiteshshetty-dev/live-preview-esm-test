@@ -111,7 +111,7 @@ var useCollab = () => {
       if ((_c2 = data == null ? void 0 : data.data) == null ? void 0 : _c2.updateConfig) {
         Config.set("collab.isFeedbackMode", true);
       }
-      if (threadUids.length > 0) {
+      if ((threadUids == null ? void 0 : threadUids.length) > 0) {
         threadUids.forEach((threadUid) => {
           removeCollabIcon(threadUid);
         });
@@ -121,11 +121,11 @@ var useCollab = () => {
   const collabThreadReopen = (_e = visualBuilderPostMessage) == null ? void 0 : _e.on(
     VisualBuilderPostMessageEvents.COLLAB_THREAD_REOPEN,
     (data) => {
-      var _a2, _b2;
-      const thread = data.data.thread;
-      if (!((_a2 = config == null ? void 0 : config.collab) == null ? void 0 : _a2.enable)) return;
+      var _a2, _b2, _c2;
+      const thread = (_a2 = data == null ? void 0 : data.data) == null ? void 0 : _a2.thread;
+      if (!((_b2 = config == null ? void 0 : config.collab) == null ? void 0 : _b2.enable) || !thread) return;
       const result = generateThread(thread, {
-        hidden: Boolean((_b2 = config == null ? void 0 : config.collab) == null ? void 0 : _b2.pauseFeedback)
+        hidden: Boolean((_c2 = config == null ? void 0 : config.collab) == null ? void 0 : _c2.pauseFeedback)
       });
       if (result) {
         handleMissingThreads({
@@ -138,9 +138,9 @@ var useCollab = () => {
   const collabThreadHighlight = (_f = visualBuilderPostMessage) == null ? void 0 : _f.on(
     VisualBuilderPostMessageEvents.COLLAB_THREAD_HIGHLIGHT,
     (data) => {
-      var _a2, _b2;
-      const { threadUid } = data.data;
-      if (!((_a2 = config == null ? void 0 : config.collab) == null ? void 0 : _a2.enable) || ((_b2 = config == null ? void 0 : config.collab) == null ? void 0 : _b2.pauseFeedback))
+      var _a2, _b2, _c2;
+      const threadUid = (_a2 = data == null ? void 0 : data.data) == null ? void 0 : _a2.threadUid;
+      if (!((_b2 = config == null ? void 0 : config.collab) == null ? void 0 : _b2.enable) || ((_c2 = config == null ? void 0 : config.collab) == null ? void 0 : _c2.pauseFeedback) || !threadUid)
         return;
       HighlightThread(threadUid);
     }

@@ -37,6 +37,7 @@ var LivePreview = class {
         window.addEventListener("load", this.requestDataSync);
       }
       if (!isOpeningInTimeline() && (config.editButton.enable || config.mode >= ILivePreviewModeConfig.BUILDER)) {
+        LivePreviewEditButton.livePreviewEditButton?.destroy();
         LivePreviewEditButton.livePreviewEditButton = new LivePreviewEditButton();
       }
     } else if (config.cleanCslpOnProduction) {

@@ -76,6 +76,7 @@ declare function visualBuilderStyles(): {
     "variant-field-revert-component__dropdown-content__list-item": string;
     "visual-builder__no-cursor-style": string;
     "visual-builder__field-toolbar-container": string;
+    "visual-builder__custom-field-instance-message": string;
     "visual-builder__variant-button": string;
     "visual-builder__field-location-icons-container": string;
     "visual-builder__field-location-icons-container__divider": string;

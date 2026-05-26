@@ -1,7 +1,9 @@
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
@@ -15,6 +17,14 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/visualBuilder/utils/getCsDataOfElement.ts
@@ -26,12 +36,20 @@ __export(getCsDataOfElement_exports, {
 module.exports = __toCommonJS(getCsDataOfElement_exports);
 var import_cslpdata = require("../../cslp/cslpdata.cjs");
 var import_constants = require("./constants.cjs");
+var import_configManager = __toESM(require("../../configManager/configManager.cjs"), 1);
 function getCsDataOfElement(event) {
   const targetElement = event.target;
   if (!targetElement) {
     return;
   }
-  const editableElement = targetElement.closest("[data-cslp]");
+  let editableElement = targetElement.closest("[data-cslp]");
+  if (!editableElement && import_configManager.default.get().overlayPropagation.enable) {
+    const stack = document.elementsFromPoint(
+      event.clientX,
+      event.clientY
+    );
+    editableElement = stack.find((el) => el.hasAttribute("data-cslp")) ?? null;
+  }
   if (!editableElement) {
     return;
   }

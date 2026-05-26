@@ -38,7 +38,7 @@ var handleClientUrlParams = (userConfig) => {
   Config.set("clientUrlParams.url", url);
 };
 var handleInitData = (initData) => {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _A;
   const config = Config.get();
   const stackSdk = initData.stackSdk || config.stackSdk;
   Config.set(
@@ -69,12 +69,15 @@ var handleInitData = (initData) => {
     enable: ((_r = initData.editInVisualBuilderButton) == null ? void 0 : _r.enable) ?? ((_t = (_s = stackSdk.live_preview) == null ? void 0 : _s.editInVisualBuilderButton) == null ? void 0 : _t.enable) ?? config.editInVisualBuilderButton.enable,
     position: ((_u = initData.editInVisualBuilderButton) == null ? void 0 : _u.position) ?? ((_v = stackSdk.live_preview) == null ? void 0 : _v.position) ?? config.editInVisualBuilderButton.position ?? "bottom-right"
   });
+  Config.set("overlayPropagation", {
+    enable: ((_w = initData.overlayPropagation) == null ? void 0 : _w.enable) ?? ((_y = (_x = stackSdk.live_preview) == null ? void 0 : _x.overlayPropagation) == null ? void 0 : _y.enable) ?? config.overlayPropagation.enable
+  });
   Config.set(
     "enableLivePreviewOutsideIframe",
     initData.enableLivePreviewOutsideIframe ?? config.enableLivePreviewOutsideIframe
   );
   handleClientUrlParams(
-    initData.clientUrlParams ?? ((_w = stackSdk.live_preview) == null ? void 0 : _w.clientUrlParams) ?? config.clientUrlParams
+    initData.clientUrlParams ?? ((_z = stackSdk.live_preview) == null ? void 0 : _z.clientUrlParams) ?? config.clientUrlParams
   );
   if (initData.mode) {
     switch (initData.mode) {
@@ -95,7 +98,7 @@ var handleInitData = (initData) => {
   }
   Config.set(
     "debug",
-    initData.debug ?? ((_x = stackSdk.live_preview) == null ? void 0 : _x.debug) ?? config.debug
+    initData.debug ?? ((_A = stackSdk.live_preview) == null ? void 0 : _A.debug) ?? config.debug
   );
   handleStackDetails(initData, stackSdk);
 };

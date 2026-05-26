@@ -129,7 +129,7 @@ var useCollab = () => {
       if (data?.data?.updateConfig) {
         import_configManager.default.set("collab.isFeedbackMode", true);
       }
-      if (threadUids.length > 0) {
+      if (threadUids?.length > 0) {
         threadUids.forEach((threadUid) => {
           (0, import_generateThread.removeCollabIcon)(threadUid);
         });
@@ -139,8 +139,8 @@ var useCollab = () => {
   const collabThreadReopen = import_visualBuilderPostMessage.default?.on(
     import_postMessage.VisualBuilderPostMessageEvents.COLLAB_THREAD_REOPEN,
     (data) => {
-      const thread = data.data.thread;
-      if (!config?.collab?.enable) return;
+      const thread = data?.data?.thread;
+      if (!config?.collab?.enable || !thread) return;
       const result = (0, import_generateThread2.generateThread)(thread, {
         hidden: Boolean(config?.collab?.pauseFeedback)
       });
@@ -155,8 +155,8 @@ var useCollab = () => {
   const collabThreadHighlight = import_visualBuilderPostMessage.default?.on(
     import_postMessage.VisualBuilderPostMessageEvents.COLLAB_THREAD_HIGHLIGHT,
     (data) => {
-      const { threadUid } = data.data;
-      if (!config?.collab?.enable || config?.collab?.pauseFeedback)
+      const threadUid = data?.data?.threadUid;
+      if (!config?.collab?.enable || config?.collab?.pauseFeedback || !threadUid)
         return;
       (0, import_generateThread.HighlightThread)(threadUid);
     }

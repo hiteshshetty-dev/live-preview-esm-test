@@ -28,6 +28,8 @@ import { toggleCollabPopup } from "../generators/generateThread.js";
 import { fixSvgXPath } from "../utils/collabUtils.js";
 import { v4 as uuidV4 } from "uuid";
 import { fetchEntryPermissionsAndStageDetails } from "../utils/fetchEntryPermissionsAndStageDetails.js";
+import { isCustomFieldMultipleInstance } from "../utils/isCustomFieldMultipleInstance.js";
+import { getParentCslp, getWholeFieldElement } from "../utils/getWholeFieldElement.js";
 function addOverlay(params) {
   if (!params.overlayWrapper || !params.editableElement) return;
   addFocusOverlay(
@@ -114,6 +116,30 @@ async function handleBuilderInteraction(params) {
     return;
   }
   const { editableElement, fieldMetadata } = eventDetails;
+  const { content_type_uid, fieldPath } = fieldMetadata;
+  if (FieldSchemaMap.hasFieldSchema(content_type_uid, fieldPath)) {
+    const fieldSchemaForCheck = await FieldSchemaMap.getFieldSchema(content_type_uid, fieldPath);
+    if (fieldSchemaForCheck && isCustomFieldMultipleInstance(fieldSchemaForCheck, fieldMetadata)) {
+      const parentCslp = getParentCslp(fieldMetadata.cslpValue);
+      const wholeFieldElement = getWholeFieldElement(editableElement, parentCslp);
+      if (wholeFieldElement) {
+        wholeFieldElement.dispatchEvent(
+          new MouseEvent("click", {
+            bubbles: true,
+            cancelable: true,
+            clientX: params.event.clientX,
+            clientY: params.event.clientY
+          })
+        );
+      } else if (config.debug) {
+        console.debug(
+          "[Visual Builder] Custom field multiple instance: whole-field parent not found in DOM for CSLP",
+          parentCslp
+        );
+      }
+      return;
+    }
+  }
   const variantStatus = await getFieldVariantStatus(fieldMetadata);
   const isVariant = variantStatus ? Object.values(variantStatus).some((value) => value === true) : false;
   cleanResidualsIfNeeded(params, editableElement);

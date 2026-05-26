@@ -55,6 +55,7 @@ var import_FieldRevertComponent = require("./FieldRevert/FieldRevertComponent.cj
 var import_loading = require("./icons/loading.cjs");
 var import_FieldLocationAppList = require("./FieldLocationAppList.cjs");
 var import_FieldLocationIcon = require("./FieldLocationIcon.cjs");
+var import_isCustomFieldMultipleInstance = require("../utils/isCustomFieldMultipleInstance.cjs");
 var import_jsx_runtime = require("preact/jsx-runtime");
 var TOOLTIP_TOP_EDGE_BUFFER = 96;
 function handleReplaceAsset(fieldMetadata) {
@@ -129,6 +130,8 @@ function FieldToolbarComponent(props) {
   let isWholeMultipleField = false;
   const APP_LIST_MIN_WIDTH = 230;
   let disableFieldActions = false;
+  let isCustomFieldMultipleInstance = false;
+  let isCustomFieldWholeMultiple = false;
   if (fieldSchema) {
     const { isDisabled } = (0, import_isFieldDisabled.isFieldDisabled)(
       fieldSchema,
@@ -147,7 +150,13 @@ function FieldToolbarComponent(props) {
     if (fieldType === import_types.FieldDataType.REFERENCE)
       isMultiple = fieldSchema.field_metadata.ref_multiple;
     isWholeMultipleField = isMultiple && (fieldMetadata.fieldPathWithIndex === fieldMetadata.instance.fieldPathWithIndex || fieldMetadata.multipleFieldMetadata?.index === -1);
-    isModalEditable = import_constants.ALLOWED_MODAL_EDITABLE_FIELD.includes(fieldType) && !isWholeMultipleField;
+    isCustomFieldMultipleInstance = (0, import_isCustomFieldMultipleInstance.isCustomFieldMultipleInstance)(fieldSchema, fieldMetadata);
+    isCustomFieldWholeMultiple = fieldType === import_types.FieldDataType.CUSTOM_FIELD && isMultiple && isWholeMultipleField;
+    if (isCustomFieldWholeMultiple) {
+      isModalEditable = true;
+    } else {
+      isModalEditable = import_constants.ALLOWED_MODAL_EDITABLE_FIELD.includes(fieldType) && !isWholeMultipleField;
+    }
     isReplaceAllowed = import_constants.ALLOWED_REPLACE_FIELDS.includes(fieldType) && !isWholeMultipleField;
   }
   const domEditStack = (0, import_getCsDataOfElement.getDOMEditStack)(eventDetails.editableElement);
@@ -340,6 +349,28 @@ function FieldToolbarComponent(props) {
       [(0, import_visualBuilder.visualBuilderStyles)()["visual-builder__tooltip--bottom"]]: invertTooltipPosition
     }
   );
+  if (isCustomFieldMultipleInstance) {
+    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+      "div",
+      {
+        className: (0, import_classnames.default)(
+          "visual-builder__field-toolbar-container",
+          (0, import_visualBuilder.visualBuilderStyles)()["visual-builder__field-toolbar-container"]
+        ),
+        children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+          "div",
+          {
+            className: (0, import_classnames.default)(
+              "visual-builder__custom-field-instance-message",
+              (0, import_visualBuilder.visualBuilderStyles)()["visual-builder__custom-field-instance-message"]
+            ),
+            "data-testid": "visual-builder__custom-field-instance-message",
+            children: "You're on a custom field item. Select the entire custom field to edit or manage it."
+          }
+        )
+      }
+    );
+  }
   return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
     "div",
     {
@@ -454,7 +485,7 @@ function FieldToolbarComponent(props) {
                     isModalEditable ? editButton : null,
                     isReplaceAllowed ? replaceButton : null,
                     formButton,
-                    fieldSchema ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+                    fieldSchema && !disableFieldActions ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
                       import_CommentIcon.default,
                       {
                         fieldMetadata,
@@ -463,7 +494,7 @@ function FieldToolbarComponent(props) {
                       }
                     ) : null
                   ] }),
-                  /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+                  !disableFieldActions && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
                     import_FieldLocationIcon.FieldLocationIcon,
                     {
                       fieldLocationData,

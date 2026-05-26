@@ -55,6 +55,8 @@ var import_configManager = __toESM(require("../../configManager/configManager.cj
 var import_generateThread = require("../generators/generateThread.cjs");
 var import_generateToolbar = require("../generators/generateToolbar.cjs");
 var import_fetchEntryPermissionsAndStageDetails = require("../utils/fetchEntryPermissionsAndStageDetails.cjs");
+var import_isCustomFieldMultipleInstance = require("../utils/isCustomFieldMultipleInstance.cjs");
+var import_getWholeFieldElement = require("../utils/getWholeFieldElement.cjs");
 var config = import_configManager.default.get();
 function resetCustomCursor(customCursor) {
   if (customCursor) {
@@ -227,6 +229,33 @@ var throttledMouseHover = (0, import_lodash_es.throttle)(async (params) => {
   }
   const { editableElement, fieldMetadata } = eventDetails;
   const { content_type_uid, fieldPath } = fieldMetadata;
+  if (import_fieldSchemaMap.FieldSchemaMap.hasFieldSchema(content_type_uid, fieldPath)) {
+    const fieldSchema = await import_fieldSchemaMap.FieldSchemaMap.getFieldSchema(content_type_uid, fieldPath);
+    if (fieldSchema && (0, import_isCustomFieldMultipleInstance.isCustomFieldMultipleInstance)(fieldSchema, fieldMetadata)) {
+      const parentCslp = (0, import_getWholeFieldElement.getParentCslp)(fieldMetadata.cslpValue);
+      const wholeFieldElement = (0, import_getWholeFieldElement.getWholeFieldElement)(editableElement, parentCslp);
+      if (wholeFieldElement) {
+        wholeFieldElement.dispatchEvent(
+          new MouseEvent("mousemove", {
+            bubbles: true,
+            cancelable: true,
+            clientX: params.event.clientX,
+            clientY: params.event.clientY
+          })
+        );
+      } else {
+        if (config.debug) {
+          console.debug(
+            "[Visual Builder] Custom field multiple instance: whole-field parent not found in DOM for CSLP",
+            parentCslp
+          );
+        }
+        resetCustomCursor(params.customCursor);
+        handleCursorPosition(params.event, params.customCursor);
+      }
+      return;
+    }
+  }
   if (import__.VisualBuilder.VisualBuilderGlobalState.value.previousSelectedEditableDOM && import__.VisualBuilder.VisualBuilderGlobalState.value.previousSelectedEditableDOM.isSameNode(
     editableElement
   )) {
@@ -268,10 +297,12 @@ var throttledMouseHover = (0, import_lodash_es.throttle)(async (params) => {
         customCursor: params.customCursor
       });
     }
-    generateCursor({
-      eventDetails,
-      customCursor: params.customCursor
-    });
+    if (import__.VisualBuilder.VisualBuilderGlobalState.value.previousHoveredTargetDOM !== editableElement) {
+      generateCursor({
+        eventDetails,
+        customCursor: params.customCursor
+      });
+    }
     handleCursorPosition(params.event, params.customCursor);
     showCustomCursor(params.customCursor);
   }

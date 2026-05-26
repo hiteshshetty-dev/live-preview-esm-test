@@ -260,15 +260,10 @@ var _VisualBuilder = class _VisualBuilder {
     if (!config.enable || config.mode < import_types.ILivePreviewModeConfig.BUILDER) {
       return;
     }
-    const pageCtx = config.pageContext;
-    const windowCtx = window.__CS_PAGE_CONTEXT__;
-    const initPayload = {
+    import_visualBuilderPostMessage.default?.send("init", {
       isSSR: config.ssr,
-      href: window.location.href,
-      entry_uid: pageCtx?.entryUid ?? windowCtx?.entryUid ?? (document.querySelector('meta[name="contentstack:entry-uid"]')?.getAttribute("content") || void 0),
-      content_type_uid: pageCtx?.contentTypeUid ?? windowCtx?.contentTypeUid ?? (document.querySelector('meta[name="contentstack:content-type-uid"]')?.getAttribute("content") || void 0)
-    };
-    import_visualBuilderPostMessage.default?.send("init", initPayload).then((data) => {
+      href: window.location.href
+    }).then((data) => {
       const {
         windowType = import_types.ILivePreviewWindowType.BUILDER,
         stackDetails,

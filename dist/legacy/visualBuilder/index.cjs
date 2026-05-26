@@ -240,7 +240,7 @@ var _VisualBuilder = class _VisualBuilder {
       this.visualBuilderContainer = null;
       this.focusedToolbar = null;
     };
-    var _a, _b, _c;
+    var _a;
     window.addEventListener("resize", this.resizeEventHandler);
     window.addEventListener("scroll", this.scrollEventHandler);
     (0, import_components.default)({
@@ -261,16 +261,11 @@ var _VisualBuilder = class _VisualBuilder {
     if (!config.enable || config.mode < import_types.ILivePreviewModeConfig.BUILDER) {
       return;
     }
-    const pageCtx = config.pageContext;
-    const windowCtx = window.__CS_PAGE_CONTEXT__;
-    const initPayload = {
+    (_a = import_visualBuilderPostMessage.default) == null ? void 0 : _a.send("init", {
       isSSR: config.ssr,
-      href: window.location.href,
-      entry_uid: (pageCtx == null ? void 0 : pageCtx.entryUid) ?? (windowCtx == null ? void 0 : windowCtx.entryUid) ?? (((_a = document.querySelector('meta[name="contentstack:entry-uid"]')) == null ? void 0 : _a.getAttribute("content")) || void 0),
-      content_type_uid: (pageCtx == null ? void 0 : pageCtx.contentTypeUid) ?? (windowCtx == null ? void 0 : windowCtx.contentTypeUid) ?? (((_b = document.querySelector('meta[name="contentstack:content-type-uid"]')) == null ? void 0 : _b.getAttribute("content")) || void 0)
-    };
-    (_c = import_visualBuilderPostMessage.default) == null ? void 0 : _c.send("init", initPayload).then((data) => {
-      var _a2, _b2, _c2;
+      href: window.location.href
+    }).then((data) => {
+      var _a2, _b, _c;
       const {
         windowType = import_types.ILivePreviewWindowType.BUILDER,
         stackDetails,
@@ -324,10 +319,10 @@ var _VisualBuilder = class _VisualBuilder {
           import_postMessage.VisualBuilderPostMessageEvents.GET_ALL_ENTRIES_IN_CURRENT_PAGE,
           import_getEntryIdentifiersInCurrentPage.getEntryIdentifiersInCurrentPage
         );
-        (_b2 = import_visualBuilderPostMessage.default) == null ? void 0 : _b2.send(
+        (_b = import_visualBuilderPostMessage.default) == null ? void 0 : _b.send(
           import_postMessage.VisualBuilderPostMessageEvents.SEND_VARIANT_AND_LOCALE
         );
-        (_c2 = import_visualBuilderPostMessage.default) == null ? void 0 : _c2.on(
+        (_c = import_visualBuilderPostMessage.default) == null ? void 0 : _c.on(
           import_postMessage.VisualBuilderPostMessageEvents.TOGGLE_SCROLL,
           (event) => {
             if (!event.data.scroll) {

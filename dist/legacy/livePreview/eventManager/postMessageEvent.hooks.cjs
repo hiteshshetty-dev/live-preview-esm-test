@@ -99,8 +99,8 @@ function useOnEntryUpdatePostMessageEvent() {
               window.location.reload();
             } else {
               live_preview = event.data.hash;
-              content_type_uid = event.data.content_type_uid || ((_b = stackDetails.$contentTypeUid) == null ? void 0 : _b.toString()) || "";
-              entry_uid = event.data.entry_uid || ((_c = stackDetails.$entryUid) == null ? void 0 : _c.toString()) || "";
+              content_type_uid = event.data.content_type_uid || ((_b = stackDetails.contentTypeUid) == null ? void 0 : _b.toString()) || "";
+              entry_uid = event.data.entry_uid || ((_c = stackDetails.entryUid) == null ? void 0 : _c.toString()) || "";
               url.searchParams.set("live_preview", live_preview);
               if (content_type_uid) {
                 url.searchParams.set(
@@ -139,7 +139,7 @@ function sendInitializeLivePreviewPostMessageEvent() {
   const initConfig = {
     shouldReload: config.ssr,
     href: window.location.href,
-    sdkVersion: "4.4.1",
+    sdkVersion: "4.4.2",
     mode: config.mode
   };
   if (config.enableLivePreviewOutsideIframe !== void 0) {

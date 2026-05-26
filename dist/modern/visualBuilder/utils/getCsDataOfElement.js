@@ -3,12 +3,20 @@ import "../../chunk-5WRI5ZAA.js";
 // src/visualBuilder/utils/getCsDataOfElement.ts
 import { extractDetailsFromCslp, isValidCslp } from "../../cslp/cslpdata.js";
 import { DATA_CSLP_ATTR_SELECTOR } from "./constants.js";
+import Config from "../../configManager/configManager.js";
 function getCsDataOfElement(event) {
   const targetElement = event.target;
   if (!targetElement) {
     return;
   }
-  const editableElement = targetElement.closest("[data-cslp]");
+  let editableElement = targetElement.closest("[data-cslp]");
+  if (!editableElement && Config.get().overlayPropagation.enable) {
+    const stack = document.elementsFromPoint(
+      event.clientX,
+      event.clientY
+    );
+    editableElement = stack.find((el) => el.hasAttribute("data-cslp")) ?? null;
+  }
   if (!editableElement) {
     return;
   }

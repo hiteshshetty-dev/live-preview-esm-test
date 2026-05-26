@@ -47,6 +47,7 @@ var LivePreview = class {
      * @hideconstructor
      */
     this.subscribers = {};
+    var _a;
     this.requestDataSync = this.requestDataSync.bind(this);
     this.subscribeToOnEntryChange = this.subscribeToOnEntryChange.bind(this);
     this.publish = this.publish.bind(this);
@@ -69,6 +70,7 @@ var LivePreview = class {
         window.addEventListener("load", this.requestDataSync);
       }
       if (!(0, import_utils.isOpeningInTimeline)() && (config.editButton.enable || config.mode >= import_types.ILivePreviewModeConfig.BUILDER)) {
+        (_a = import_editButton.LivePreviewEditButton.livePreviewEditButton) == null ? void 0 : _a.destroy();
         import_editButton.LivePreviewEditButton.livePreviewEditButton = new import_editButton.LivePreviewEditButton();
       }
     } else if (config.cleanCslpOnProduction) {

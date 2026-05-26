@@ -69,6 +69,7 @@ var LivePreview = class {
         window.addEventListener("load", this.requestDataSync);
       }
       if (!(0, import_utils.isOpeningInTimeline)() && (config.editButton.enable || config.mode >= import_types.ILivePreviewModeConfig.BUILDER)) {
+        import_editButton.LivePreviewEditButton.livePreviewEditButton?.destroy();
         import_editButton.LivePreviewEditButton.livePreviewEditButton = new import_editButton.LivePreviewEditButton();
       }
     } else if (config.cleanCslpOnProduction) {

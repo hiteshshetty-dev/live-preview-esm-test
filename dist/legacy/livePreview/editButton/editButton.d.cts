@@ -11,6 +11,7 @@ declare class LivePreviewEditButton {
     private tooltip;
     private typeOfCurrentChild;
     private tooltipChild;
+    private overlayMouseMoveHandler;
     static livePreviewEditButton: LivePreviewEditButton | null;
     constructor();
     private createCslpTooltip;

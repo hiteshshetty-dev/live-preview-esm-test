@@ -20,6 +20,9 @@ function getUserInitData() {
       enable: true,
       position: "bottom-right"
     },
+    overlayPropagation: {
+      enable: false
+    },
     mode: "preview",
     stackDetails: {
       apiKey: "",
@@ -54,6 +57,9 @@ function getDefaultConfig() {
     editInVisualBuilderButton: {
       enable: true,
       position: "bottom-right"
+    },
+    overlayPropagation: {
+      enable: false
     },
     hash: "",
     mode: 1,
@@ -102,8 +108,7 @@ function getDefaultConfig() {
       },
       payload: []
     },
-    enableLivePreviewOutsideIframe: void 0,
-    pageContext: null
+    enableLivePreviewOutsideIframe: void 0
   };
 }
 export {

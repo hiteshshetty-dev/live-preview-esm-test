@@ -138,7 +138,19 @@ function getMultipleFieldMetadata(content_type_uid, entry_uid, locale, fieldPath
     index: (0, import_lodash_es.isNil)(index) ? -1 : +index
   };
 }
+function highlightCslpElement(element, cslpTag, elements, callback) {
+  if (elements.highlightedElement)
+    elements.highlightedElement.classList.remove(
+      (0, import_editButton.cslpTagStyles)()["cslp-edit-mode"]
+    );
+  element.classList.add((0, import_editButton.cslpTagStyles)()["cslp-edit-mode"]);
+  const updatedElements = elements;
+  updatedElements.highlightedElement = element;
+  import_configManager.default.set("elements", updatedElements);
+  callback == null ? void 0 : callback({ cslpTag, highlightedElement: element });
+}
 function addCslpOutline(e, callback) {
+  var _a;
   const elements = import_configManager.default.get().elements;
   let trigger = true;
   const eventTargets = e.composedPath();
@@ -148,21 +160,23 @@ function addCslpOutline(e, callback) {
     if (typeof (element == null ? void 0 : element.getAttribute) !== "function") continue;
     const cslpTag = element.getAttribute("data-cslp");
     if (trigger && isValidCslp(cslpTag)) {
-      if (elements.highlightedElement)
-        elements.highlightedElement.classList.remove(
-          (0, import_editButton.cslpTagStyles)()["cslp-edit-mode"]
-        );
-      element.classList.add((0, import_editButton.cslpTagStyles)()["cslp-edit-mode"]);
-      const updatedElements = elements;
-      updatedElements.highlightedElement = element;
-      import_configManager.default.set("elements", updatedElements);
-      callback == null ? void 0 : callback({
-        cslpTag,
-        highlightedElement: element
-      });
+      highlightCslpElement(element, cslpTag, elements, callback);
       trigger = false;
     } else if (!trigger) {
       element.classList.remove((0, import_editButton.cslpTagStyles)()["cslp-edit-mode"]);
+    }
+  }
+  if (trigger && ((_a = import_configManager.default.get().overlayPropagation) == null ? void 0 : _a.enable)) {
+    const pointElements = document.elementsFromPoint(e.clientX, e.clientY);
+    for (const el of pointElements) {
+      const element = el;
+      if (element.nodeName === "BODY") break;
+      if (typeof (element == null ? void 0 : element.getAttribute) !== "function") continue;
+      const cslpTag = element.getAttribute("data-cslp");
+      if (isValidCslp(cslpTag)) {
+        highlightCslpElement(element, cslpTag, elements, callback);
+        break;
+      }
     }
   }
 }

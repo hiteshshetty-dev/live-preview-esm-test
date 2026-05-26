@@ -58,10 +58,6 @@ declare enum ILivePreviewWindowType {
     BUILDER = "builder",
     INDEPENDENT = "independent"
 }
-declare interface IPageContext {
-    entryUid: string;
-    contentTypeUid: string;
-}
 declare interface IConfig {
     ssr: boolean;
     enable: boolean;
@@ -79,17 +75,29 @@ declare interface IConfig {
     hash: string;
     editButton: IConfigEditButton;
     editInVisualBuilderButton: IConfigEditInVisualBuilderButton;
+    overlayPropagation: IConfigOverlayPropagation;
     mode: ILivePreviewModeConfig;
     elements: {
         highlightedElement: HTMLElement | null;
     };
     collab: ICollabConfig["collab"];
     enableLivePreviewOutsideIframe: boolean | undefined;
-    pageContext: IPageContext | null;
 }
 declare interface IConfigEditInVisualBuilderButton {
     enable: boolean;
     position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
+}
+declare interface IConfigOverlayPropagation {
+    /**
+     * When `true`, Visual Builder hover/click detection falls back to
+     * `document.elementsFromPoint()` if the immediate `event.target` has no
+     * ancestor with `data-cslp`. This allows the SDK to pierce sibling
+     * elements (e.g. empty CSS-grid spacer cells) that visually overlap a
+     * `data-cslp` field and would otherwise intercept the mouse event.
+     *
+     * @default false
+     */
+    enable: boolean;
 }
 declare interface IConfigEditButton {
     enable: boolean;
@@ -111,6 +119,7 @@ declare interface IInitData {
     stackSdk: IStackSdk;
     editButton: IConfigEditButton;
     editInVisualBuilderButton: IConfigEditInVisualBuilderButton;
+    overlayPropagation: IConfigOverlayPropagation;
     mode: ILivePreviewMode;
     enableLivePreviewOutsideIframe: boolean | undefined;
 }
@@ -130,4 +139,4 @@ interface IVisualBuilderInitEvent {
 }
 type IExportedConfig = Pick<IConfig, "ssr" | "enable" | "cleanCslpOnProduction" | "stackDetails" | "clientUrlParams" | "windowType" | "hash" | "editButton" | "mode">;
 
-export { type IClientUrlParams, type IConfig, type IConfigEditButton, type IConfigEditInVisualBuilderButton, type IEditButtonPosition, type IEditEntrySearchParams, type IExportedConfig, type IInitData, type IInitStackDetails, type ILivePreviewMessageCommon, type ILivePreviewMode, ILivePreviewModeConfig, ILivePreviewWindowType, type IPageContext, type IStackDetails, type IStackSdk, type IVisualBuilderInitEvent };
+export { type IClientUrlParams, type IConfig, type IConfigEditButton, type IConfigEditInVisualBuilderButton, type IConfigOverlayPropagation, type IEditButtonPosition, type IEditEntrySearchParams, type IExportedConfig, type IInitData, type IInitStackDetails, type ILivePreviewMessageCommon, type ILivePreviewMode, ILivePreviewModeConfig, ILivePreviewWindowType, type IStackDetails, type IStackSdk, type IVisualBuilderInitEvent };

@@ -99,6 +99,9 @@ var handleInitData = (initData) => {
     enable: initData.editInVisualBuilderButton?.enable ?? stackSdk.live_preview?.editInVisualBuilderButton?.enable ?? config.editInVisualBuilderButton.enable,
     position: initData.editInVisualBuilderButton?.position ?? stackSdk.live_preview?.position ?? config.editInVisualBuilderButton.position ?? "bottom-right"
   });
+  import_configManager.default.set("overlayPropagation", {
+    enable: initData.overlayPropagation?.enable ?? stackSdk.live_preview?.overlayPropagation?.enable ?? config.overlayPropagation.enable
+  });
   import_configManager.default.set(
     "enableLivePreviewOutsideIframe",
     initData.enableLivePreviewOutsideIframe ?? config.enableLivePreviewOutsideIframe

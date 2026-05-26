@@ -57,11 +57,7 @@ declare enum VisualBuilderPostMessageEvents {
     COLLAB_THREAD_REOPEN = "collab-thread-reopen",
     COLLAB_THREAD_HIGHLIGHT = "collab-thread-highlight",
     TOGGLE_SCROLL = "toggle-scroll",
-    PAGE_CONTEXT = "page-context"
-}
-interface IPageContextPostMessageEvent {
-    entryUid: string;
-    contentTypeUid: string;
+    REQUEST_DISCUSSION_HIGHLIGHTS = "request-discussion-highlights"
 }
 
-export { type IPageContextPostMessageEvent, VisualBuilderPostMessageEvents };
+export { VisualBuilderPostMessageEvents };

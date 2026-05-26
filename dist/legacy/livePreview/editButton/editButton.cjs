@@ -40,6 +40,7 @@ __export(editButton_exports, {
   toggleEditButtonElement: () => toggleEditButtonElement
 });
 module.exports = __toCommonJS(editButton_exports);
+var import_lodash_es = require("lodash-es");
 var import_signals = require("@preact/signals");
 var import_inIframe = require("../../common/inIframe.cjs");
 var import_configManager = __toESM(require("../../configManager/configManager.cjs"), 1);
@@ -230,6 +231,8 @@ var LivePreviewEditButton = class {
       singular: null,
       multiple: null
     };
+    this.overlayMouseMoveHandler = null;
+    var _a;
     this.createCslpTooltip = this.createCslpTooltip.bind(this);
     this.updateTooltipPosition = this.updateTooltipPosition.bind(this);
     this.addEditStyleOnHover = this.addEditStyleOnHover.bind(this);
@@ -241,6 +244,16 @@ var LivePreviewEditButton = class {
       this.updateTooltipPosition();
       window.addEventListener("scroll", this.updateTooltipPosition);
       window.addEventListener("mouseover", this.addEditStyleOnHover);
+      if ((_a = import_configManager.default.get().overlayPropagation) == null ? void 0 : _a.enable) {
+        this.overlayMouseMoveHandler = (0, import_lodash_es.throttle)(
+          this.addEditStyleOnHover,
+          200
+        );
+        window.addEventListener(
+          "mousemove",
+          this.overlayMouseMoveHandler
+        );
+      }
     }
   }
   createCslpTooltip() {
@@ -446,6 +459,13 @@ var LivePreviewEditButton = class {
     var _a;
     window.removeEventListener("scroll", this.updateTooltipPosition);
     window.removeEventListener("mouseover", this.addEditStyleOnHover);
+    if (this.overlayMouseMoveHandler) {
+      window.removeEventListener(
+        "mousemove",
+        this.overlayMouseMoveHandler
+      );
+      this.overlayMouseMoveHandler = null;
+    }
     (_a = this.tooltip) == null ? void 0 : _a.remove();
   }
 };
