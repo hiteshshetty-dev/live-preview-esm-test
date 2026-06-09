@@ -21,6 +21,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var inIframe_exports = {};
 __export(inIframe_exports, {
   inIframe: () => inIframe,
+  inVisualEditor: () => inVisualEditor,
   isOpeningInNewTab: () => isOpeningInNewTab
 });
 module.exports = __toCommonJS(inIframe_exports);
@@ -30,6 +31,13 @@ function inIframe() {
     return window.self !== window.top;
   } catch (e) {
     return true;
+  }
+}
+function inVisualEditor() {
+  try {
+    return inIframe() && (window == null ? void 0 : window.name) == "visual-editor";
+  } catch (e) {
+    return false;
   }
 }
 function isOpeningInNewTab() {
@@ -45,6 +53,7 @@ function isOpeningInNewTab() {
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   inIframe,
+  inVisualEditor,
   isOpeningInNewTab
 });
 //# sourceMappingURL=inIframe.cjs.map

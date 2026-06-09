@@ -36,7 +36,7 @@ module.exports = __toCommonJS(onPageTraversal_exports);
 var import_livePreviewEventManager = __toESM(require("./eventManager/livePreviewEventManager.cjs"), 1);
 var import_livePreviewEventManager2 = require("./eventManager/livePreviewEventManager.constant.cjs");
 function handlePageTraversal() {
-  window.addEventListener("unload", () => {
+  window.addEventListener("pagehide", () => {
     const targetURL = document.activeElement.href;
     if (targetURL) {
       import_livePreviewEventManager.default?.send(

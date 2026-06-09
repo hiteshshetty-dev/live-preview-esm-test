@@ -4,7 +4,7 @@ import "../chunk-5WRI5ZAA.js";
 import livePreviewPostMessage from "./eventManager/livePreviewEventManager.js";
 import { LIVE_PREVIEW_POST_MESSAGE_EVENTS } from "./eventManager/livePreviewEventManager.constant.js";
 function handlePageTraversal() {
-  window.addEventListener("unload", () => {
+  window.addEventListener("pagehide", () => {
     var _a;
     const targetURL = document.activeElement.href;
     if (targetURL) {

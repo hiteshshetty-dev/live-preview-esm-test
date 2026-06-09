@@ -98,6 +98,25 @@ declare class ContentstackLivePreview {
      */
     static unsubscribeOnEntryChange(callback: OnEntryChangeUnsubscribeParameters): void;
     /**
+     * Sets the page-level entry context for the current page.
+     * Used by the Visual Builder "Start Editing" button to know which entry
+     * the current page is rendering, enabling accurate VB navigation.
+     *
+     * Place this call alongside your existing `addEditableTags` call — both
+     * reference the same `entry` object so there is no extra lookup.
+     *
+     * @example
+     * ```js
+     * // In your page component / useEffect
+     * Utils.addEditableTags(entry, "blog_post", true, "en-us");
+     * ContentstackLivePreview.setPageContext({ entryUid: entry.uid, contentTypeUid: "blog_post" });
+     * ```
+     */
+    static setPageContext(context: {
+        entryUid: string;
+        contentTypeUid: string;
+    }): void;
+    /**
      * Retrieves the version of the SDK.
      * @returns The version of the SDK as a string.
      */

@@ -1,8 +1,8 @@
 import "../../chunk-5WRI5ZAA.js";
 
 // src/livePreview/eventManager/postMessageEvent.hooks.ts
-import { isOpeningInNewTab } from "../../common/inIframe.js";
-import Config, { setConfigFromParams } from "../../configManager/configManager.js";
+import { inVisualEditor, isOpeningInNewTab } from "../../common/inIframe.js";
+import Config, { syncToStackSdk } from "../../configManager/configManager.js";
 import { PublicLogger } from "../../logger/logger.js";
 import { ILivePreviewWindowType } from "../../types/types.js";
 import { addParamsToUrl, isOpeningInTimeline } from "../../utils/index.js";
@@ -43,9 +43,10 @@ function useOnEntryUpdatePostMessageEvent() {
       try {
         const { ssr, onChange, stackDetails } = Config.get();
         const event_type = event.data._metadata?.event_type;
-        setConfigFromParams({
-          live_preview: event.data.hash
-        });
+        if (event.data.hash) {
+          Config.set("hash", event.data.hash);
+          syncToStackSdk({ hash: event.data.hash });
+        }
         if (!ssr && !event_type) {
           onChange();
         }
@@ -103,7 +104,7 @@ function sendInitializeLivePreviewPostMessageEvent() {
   const initConfig = {
     shouldReload: config.ssr,
     href: window.location.href,
-    sdkVersion: "4.4.2",
+    sdkVersion: "4.4.4",
     mode: config.mode
   };
   if (config.enableLivePreviewOutsideIframe !== void 0) {
@@ -120,14 +121,16 @@ function sendInitializeLivePreviewPostMessageEvent() {
       entryUid,
       windowType = ILivePreviewWindowType.PREVIEW
     } = data || {};
+    if (inVisualEditor()) {
+      return;
+    }
     if (Config?.get()?.windowType && Config.get().windowType === ILivePreviewWindowType.BUILDER) {
       return;
     }
     if (contentTypeUid && entryUid) {
-      setConfigFromParams({
-        content_type_uid: contentTypeUid,
-        entry_uid: entryUid
-      });
+      Config.set("stackDetails.contentTypeUid", contentTypeUid);
+      Config.set("stackDetails.entryUid", entryUid);
+      syncToStackSdk({ contentTypeUid, entryUid });
     } else {
     }
     if (Config.get().ssr || isOpeningInTimeline() || isOpeningInNewTab()) {

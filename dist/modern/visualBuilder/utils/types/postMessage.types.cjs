@@ -82,6 +82,7 @@ var VisualBuilderPostMessageEvents = /* @__PURE__ */ ((VisualBuilderPostMessageE
   VisualBuilderPostMessageEvents2["COLLAB_THREAD_REOPEN"] = "collab-thread-reopen";
   VisualBuilderPostMessageEvents2["COLLAB_THREAD_HIGHLIGHT"] = "collab-thread-highlight";
   VisualBuilderPostMessageEvents2["TOGGLE_SCROLL"] = "toggle-scroll";
+  VisualBuilderPostMessageEvents2["PAGE_CONTEXT"] = "page-context";
   VisualBuilderPostMessageEvents2["REQUEST_DISCUSSION_HIGHLIGHTS"] = "request-discussion-highlights";
   return VisualBuilderPostMessageEvents2;
 })(VisualBuilderPostMessageEvents || {});

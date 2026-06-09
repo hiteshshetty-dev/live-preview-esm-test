@@ -41,6 +41,7 @@ var import_types = require("../types/types.cjs");
 var import_generateStartEditingButton = require("./generators/generateStartEditingButton.cjs");
 var import_generateOverlay = require("./generators/generateOverlay.cjs");
 var import_getEntryIdentifiersInCurrentPage = require("./utils/getEntryIdentifiersInCurrentPage.cjs");
+var import_resolvePageContext = require("./utils/resolvePageContext.cjs");
 var import_visualBuilderPostMessage = __toESM(require("./utils/visualBuilderPostMessage.cjs"), 1);
 var import_postMessage = require("./utils/types/postMessage.types.cjs");
 var import_goober = require("goober");
@@ -260,10 +261,14 @@ var _VisualBuilder = class _VisualBuilder {
     if (!config.enable || config.mode < import_types.ILivePreviewModeConfig.BUILDER) {
       return;
     }
-    import_visualBuilderPostMessage.default?.send("init", {
+    const { entryUid, contentTypeUid } = (0, import_resolvePageContext.resolvePageContext)();
+    const initPayload = {
       isSSR: config.ssr,
-      href: window.location.href
-    }).then((data) => {
+      href: window.location.href,
+      entry_uid: entryUid,
+      content_type_uid: contentTypeUid
+    };
+    import_visualBuilderPostMessage.default?.send("init", initPayload).then((data) => {
       const {
         windowType = import_types.ILivePreviewWindowType.BUILDER,
         stackDetails,

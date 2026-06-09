@@ -39,5 +39,15 @@ declare function updateConfigFromUrl(): void;
  * Basically anything that can be passed to `URLSearchParams` constructor.
  */
 declare function setConfigFromParams(params?: ConstructorParameters<typeof URLSearchParams>[0]): void;
+/**
+ * Syncs hash, contentTypeUid, and entryUid into the user's stackSdk.live_preview object.
+ * Auto-effects via deepsignal were ruled out because Config.reset() replaces the deepSignal
+ * instance, which would blind any bound effect. Explicit sync is the safe alternative.
+ */
+declare function syncToStackSdk({ hash, contentTypeUid, entryUid, }: {
+    hash?: string | null;
+    contentTypeUid?: string | null;
+    entryUid?: string | null;
+}): void;
 
-export { Config as default, setConfigFromParams, updateConfigFromUrl };
+export { Config as default, setConfigFromParams, syncToStackSdk, updateConfigFromUrl };

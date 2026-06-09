@@ -35,6 +35,7 @@ __export(contentstack_live_preview_HOC_exports, {
 module.exports = __toCommonJS(contentstack_live_preview_HOC_exports);
 var import_lodash_es = require("lodash-es");
 var import_uuid = require("uuid");
+var import_inIframe = require("../common/inIframe.cjs");
 var import_config = require("../configManager/config.default.cjs");
 var import_configManager = __toESM(require("../configManager/configManager.cjs"), 1);
 var import_live_preview = __toESM(require("../livePreview/live-preview.cjs"), 1);
@@ -43,6 +44,8 @@ var import_removeFromOnChangeSubscribers = require("../livePreview/removeFromOnC
 var import_logger = require("../logger/logger.cjs");
 var import_compare = require("../timeline/compare/compare.cjs");
 var import_visualBuilder = require("../visualBuilder/index.cjs");
+var import_visualBuilderPostMessage = __toESM(require("../visualBuilder/utils/visualBuilderPostMessage.cjs"), 1);
+var import_postMessage = require("../visualBuilder/utils/types/postMessage.types.cjs");
 var _ContentstackLivePreview = class _ContentstackLivePreview {
   /**
    * Initializes the Live Preview SDK with the provided user configuration.
@@ -223,11 +226,43 @@ var _ContentstackLivePreview = class _ContentstackLivePreview {
     );
   }
   /**
+   * Sets the page-level entry context for the current page.
+   * Used by the Visual Builder "Start Editing" button to know which entry
+   * the current page is rendering, enabling accurate VB navigation.
+   *
+   * Place this call alongside your existing `addEditableTags` call — both
+   * reference the same `entry` object so there is no extra lookup.
+   *
+   * @example
+   * ```js
+   * // In your page component / useEffect
+   * Utils.addEditableTags(entry, "blog_post", true, "en-us");
+   * ContentstackLivePreview.setPageContext({ entryUid: entry.uid, contentTypeUid: "blog_post" });
+   * ```
+   */
+  static setPageContext(context) {
+    import_configManager.default.set("pageContext", context);
+    if ((0, import_inIframe.inIframe)()) {
+      import_visualBuilderPostMessage.default?.send(
+        import_postMessage.VisualBuilderPostMessageEvents.PAGE_CONTEXT,
+        {
+          entryUid: context.entryUid,
+          contentTypeUid: context.contentTypeUid
+        }
+      ).catch((error) => {
+        import_logger.PublicLogger.error(
+          "Failed to send page context to Visual Builder.",
+          error
+        );
+      });
+    }
+  }
+  /**
    * Retrieves the version of the SDK.
    * @returns The version of the SDK as a string.
    */
   static getSdkVersion() {
-    return "4.4.2";
+    return "4.4.4";
   }
 };
 _ContentstackLivePreview.previewConstructors = {};

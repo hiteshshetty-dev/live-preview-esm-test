@@ -3,6 +3,7 @@ import "../../chunk-5WRI5ZAA.js";
 // src/visualBuilder/utils/getVisualBuilderRedirectionUrl.ts
 import Config from "../../configManager/configManager.js";
 import { extractDetailsFromCslp, isValidCslp } from "../../cslp/index.js";
+import { resolvePageContext } from "./resolvePageContext.js";
 function getVisualBuilderRedirectionUrl() {
   const { stackDetails, clientUrlParams } = Config.get();
   const { branch, apiKey, environment, locale } = stackDetails;
@@ -26,6 +27,13 @@ function getVisualBuilderRedirectionUrl() {
   }
   if (localeToUse) {
     searchParams.set("locale", localeToUse);
+  }
+  const { entryUid, contentTypeUid } = resolvePageContext();
+  if (entryUid) {
+    searchParams.set("entry_uid", entryUid);
+  }
+  if (contentTypeUid) {
+    searchParams.set("content_type_uid", contentTypeUid);
   }
   const completeURL = new URL(
     `/#!/stack/${apiKey}/visual-editor?${searchParams.toString()}`,

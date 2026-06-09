@@ -9,6 +9,13 @@ function inIframe() {
     return true;
   }
 }
+function inVisualEditor() {
+  try {
+    return inIframe() && (window == null ? void 0 : window.name) == "visual-editor";
+  } catch (e) {
+    return false;
+  }
+}
 function isOpeningInNewTab() {
   try {
     if (hasWindow()) {
@@ -21,6 +28,7 @@ function isOpeningInNewTab() {
 }
 export {
   inIframe,
+  inVisualEditor,
   isOpeningInNewTab
 };
 //# sourceMappingURL=inIframe.js.map

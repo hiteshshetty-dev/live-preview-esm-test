@@ -15,6 +15,7 @@ import {
 import { generateStartEditingButton } from "./generators/generateStartEditingButton.js";
 import { addFocusOverlay } from "./generators/generateOverlay.js";
 import { getEntryIdentifiersInCurrentPage } from "./utils/getEntryIdentifiersInCurrentPage.js";
+import { resolvePageContext } from "./utils/resolvePageContext.js";
 import visualBuilderPostMessage from "./utils/visualBuilderPostMessage.js";
 import { VisualBuilderPostMessageEvents } from "./utils/types/postMessage.types.js";
 import { setup } from "goober";
@@ -250,10 +251,14 @@ var _VisualBuilder = class _VisualBuilder {
     if (!config.enable || config.mode < ILivePreviewModeConfig.BUILDER) {
       return;
     }
-    (_a = visualBuilderPostMessage) == null ? void 0 : _a.send("init", {
+    const { entryUid, contentTypeUid } = resolvePageContext();
+    const initPayload = {
       isSSR: config.ssr,
-      href: window.location.href
-    }).then((data) => {
+      href: window.location.href,
+      entry_uid: entryUid,
+      content_type_uid: contentTypeUid
+    };
+    (_a = visualBuilderPostMessage) == null ? void 0 : _a.send("init", initPayload).then((data) => {
       var _a2, _b, _c;
       const {
         windowType = ILivePreviewWindowType.BUILDER,

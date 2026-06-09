@@ -22,6 +22,7 @@ var configManager_exports = {};
 __export(configManager_exports, {
   default: () => configManager_default,
   setConfigFromParams: () => setConfigFromParams,
+  syncToStackSdk: () => syncToStackSdk,
   updateConfigFromUrl: () => updateConfigFromUrl
 });
 module.exports = __toCommonJS(configManager_exports);
@@ -59,25 +60,43 @@ function setConfigFromParams(params = {}) {
   const live_preview = urlParams.get("live_preview");
   const content_type_uid = urlParams.get("content_type_uid");
   const entry_uid = urlParams.get("entry_uid");
-  const stackSdkLivePreview = Config.get().stackSdk.live_preview;
   if (live_preview) {
     Config.set("hash", live_preview);
-    stackSdkLivePreview.hash = live_preview;
-    stackSdkLivePreview.live_preview = live_preview;
   }
   if (content_type_uid) {
     Config.set("stackDetails.contentTypeUid", content_type_uid);
-    stackSdkLivePreview.content_type_uid = content_type_uid;
   }
   if (entry_uid) {
     Config.set("stackDetails.entryUid", entry_uid);
-    stackSdkLivePreview.entry_uid = entry_uid;
+  }
+  syncToStackSdk({
+    hash: live_preview,
+    contentTypeUid: content_type_uid,
+    entryUid: entry_uid
+  });
+}
+function syncToStackSdk({
+  hash,
+  contentTypeUid,
+  entryUid
+}) {
+  const stackSdkLivePreview = Config.get().stackSdk.live_preview;
+  if (hash) {
+    stackSdkLivePreview.hash = hash;
+    stackSdkLivePreview.live_preview = hash;
+  }
+  if (contentTypeUid) {
+    stackSdkLivePreview.content_type_uid = contentTypeUid;
+  }
+  if (entryUid) {
+    stackSdkLivePreview.entry_uid = entryUid;
   }
   Config.set("stackSdk.live_preview", stackSdkLivePreview);
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   setConfigFromParams,
+  syncToStackSdk,
   updateConfigFromUrl
 });
 //# sourceMappingURL=configManager.cjs.map

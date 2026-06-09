@@ -75,9 +75,10 @@ function useOnEntryUpdatePostMessageEvent() {
       try {
         const { ssr, onChange, stackDetails } = import_configManager.default.get();
         const event_type = event.data._metadata?.event_type;
-        (0, import_configManager.setConfigFromParams)({
-          live_preview: event.data.hash
-        });
+        if (event.data.hash) {
+          import_configManager.default.set("hash", event.data.hash);
+          (0, import_configManager.syncToStackSdk)({ hash: event.data.hash });
+        }
         if (!ssr && !event_type) {
           onChange();
         }
@@ -135,7 +136,7 @@ function sendInitializeLivePreviewPostMessageEvent() {
   const initConfig = {
     shouldReload: config.ssr,
     href: window.location.href,
-    sdkVersion: "4.4.2",
+    sdkVersion: "4.4.4",
     mode: config.mode
   };
   if (config.enableLivePreviewOutsideIframe !== void 0) {
@@ -152,14 +153,16 @@ function sendInitializeLivePreviewPostMessageEvent() {
       entryUid,
       windowType = import_types.ILivePreviewWindowType.PREVIEW
     } = data || {};
+    if ((0, import_inIframe.inVisualEditor)()) {
+      return;
+    }
     if (import_configManager.default?.get()?.windowType && import_configManager.default.get().windowType === import_types.ILivePreviewWindowType.BUILDER) {
       return;
     }
     if (contentTypeUid && entryUid) {
-      (0, import_configManager.setConfigFromParams)({
-        content_type_uid: contentTypeUid,
-        entry_uid: entryUid
-      });
+      import_configManager.default.set("stackDetails.contentTypeUid", contentTypeUid);
+      import_configManager.default.set("stackDetails.entryUid", entryUid);
+      (0, import_configManager.syncToStackSdk)({ contentTypeUid, entryUid });
     } else {
     }
     if (import_configManager.default.get().ssr || (0, import_utils.isOpeningInTimeline)() || (0, import_inIframe.isOpeningInNewTab)()) {

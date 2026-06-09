@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/types/global.d.ts"],"sourcesContent":["import type { IPageContext } from \"./types\";\n\ndeclare global {\n    interface Window {\n        __CS_PAGE_CONTEXT__?: IPageContext;\n    }\n}\n\nexport {};\n"],"mappings":";;;;;;;;;;;;;;;;AAAA;AAAA;","names":[]}

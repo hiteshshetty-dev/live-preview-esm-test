@@ -35,6 +35,7 @@ __export(getVisualBuilderRedirectionUrl_exports, {
 module.exports = __toCommonJS(getVisualBuilderRedirectionUrl_exports);
 var import_configManager = __toESM(require("../../configManager/configManager.cjs"), 1);
 var import_cslp = require("../../cslp/index.cjs");
+var import_resolvePageContext = require("./resolvePageContext.cjs");
 function getVisualBuilderRedirectionUrl() {
   const { stackDetails, clientUrlParams } = import_configManager.default.get();
   const { branch, apiKey, environment, locale } = stackDetails;
@@ -58,6 +59,13 @@ function getVisualBuilderRedirectionUrl() {
   }
   if (localeToUse) {
     searchParams.set("locale", localeToUse);
+  }
+  const { entryUid, contentTypeUid } = (0, import_resolvePageContext.resolvePageContext)();
+  if (entryUid) {
+    searchParams.set("entry_uid", entryUid);
+  }
+  if (contentTypeUid) {
+    searchParams.set("content_type_uid", contentTypeUid);
   }
   const completeURL = new URL(
     `/#!/stack/${apiKey}/visual-editor?${searchParams.toString()}`,
