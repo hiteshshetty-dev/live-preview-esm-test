@@ -224,17 +224,6 @@ var throttledMouseHover = throttle(async (params) => {
     return;
   }
   if (params.customCursor) {
-    const elementUnderCursor = document.elementFromPoint(
-      params.event.clientX,
-      params.event.clientY
-    );
-    if (elementUnderCursor) {
-      if (elementUnderCursor.nodeName === "A" || elementUnderCursor.nodeName === "BUTTON") {
-        elementUnderCursor.classList.add(
-          visualBuilderStyles()["visual-builder__no-cursor-style"]
-        );
-      }
-    }
     if ((config == null ? void 0 : config.collab.enable) && (config == null ? void 0 : config.collab.isFeedbackMode)) {
       collabCustomCursor(params.customCursor);
       handleCursorPosition(params.event, params.customCursor);

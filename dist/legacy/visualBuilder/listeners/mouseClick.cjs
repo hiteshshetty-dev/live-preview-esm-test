@@ -58,6 +58,7 @@ var import_uuid = require("uuid");
 var import_fetchEntryPermissionsAndStageDetails = require("../utils/fetchEntryPermissionsAndStageDetails.cjs");
 var import_isCustomFieldMultipleInstance = require("../utils/isCustomFieldMultipleInstance.cjs");
 var import_getWholeFieldElement = require("../utils/getWholeFieldElement.cjs");
+var SAFE_URL_SCHEMES = /* @__PURE__ */ new Set(["http:", "https:", "mailto:", "tel:"]);
 function addOverlay(params) {
   if (!params.overlayWrapper || !params.editableElement) return;
   (0, import_generateOverlay.addFocusOverlay)(
@@ -80,7 +81,8 @@ function addFocusedToolbar(params) {
 }
 async function handleBuilderInteraction(params) {
   const eventTarget = params.event.target;
-  const isAnchorElement = eventTarget instanceof HTMLAnchorElement;
+  const anchorElement = (eventTarget == null ? void 0 : eventTarget.closest("a")) ?? null;
+  const isAnchorElement = anchorElement !== null;
   const elementHasCslp = eventTarget && (eventTarget.hasAttribute("data-cslp") || eventTarget.closest("[data-cslp]"));
   const eventTargetCslp = eventTarget == null ? void 0 : eventTarget.getAttribute("data-cslp");
   if ((0, import_cslp.isValidCslp)(eventTargetCslp)) {
@@ -100,9 +102,17 @@ async function handleBuilderInteraction(params) {
     return;
   }
   if (params.event.altKey) {
-    if (isAnchorElement) {
+    if (anchorElement) {
+      const { href, target, protocol } = anchorElement;
       params.event.preventDefault();
       params.event.stopPropagation();
+      if (href && SAFE_URL_SCHEMES.has(protocol)) {
+        if (target === "_blank") {
+          window.open(href, "_blank", "noopener,noreferrer");
+        } else {
+          window.location.href = href;
+        }
+      }
     }
     return;
   }

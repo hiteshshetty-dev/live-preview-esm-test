@@ -722,6 +722,13 @@ function visualBuilderStyles() {
         `,
     "visual-builder__default-cursor--disabled": import_goober.css`
             cursor: none;
+            /* links/buttons carry their own cursor:pointer — suppress it too
+               while the custom cursor is active. Scoped to this body class so
+               it auto-reverts when the class is removed */
+            & a,
+            & button {
+                cursor: none !important;
+            }
         `,
     "visual-builder__draft-field": import_goober.css`
             outline: 2px dashed #eb5646;
@@ -841,9 +848,6 @@ function visualBuilderStyles() {
                 margin-top: 4px;
                 margin-bottom: 4px;
             }
-        `,
-    "visual-builder__no-cursor-style": import_goober.css`
-            cursor: none !important;
         `,
     "visual-builder__field-toolbar-container": import_goober.css`
             display: flex;

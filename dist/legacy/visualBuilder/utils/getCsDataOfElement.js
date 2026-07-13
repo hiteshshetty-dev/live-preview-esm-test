@@ -10,7 +10,7 @@ function getCsDataOfElement(event) {
     return;
   }
   let editableElement = targetElement.closest("[data-cslp]");
-  if (!editableElement && Config.get().overlayPropagation.enable) {
+  if (!editableElement && Config.get().overlayPropagation.enable && !targetElement.closest(".visual-builder__container")) {
     const stack = document.elementsFromPoint(
       event.clientX,
       event.clientY

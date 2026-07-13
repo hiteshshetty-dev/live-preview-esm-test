@@ -60,7 +60,7 @@ var _LightLivePreviewHoC = class _LightLivePreviewHoC {
   static unsubscribeOnEntryChange() {
   }
   static getSdkVersion() {
-    return (typeof process !== "undefined" ? "4.4.4" : void 0) ?? "";
+    return (typeof process !== "undefined" ? "4.4.5" : void 0) ?? "";
   }
 };
 _LightLivePreviewHoC.previewConstructors = {};

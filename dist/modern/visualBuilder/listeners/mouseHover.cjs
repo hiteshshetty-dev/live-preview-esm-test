@@ -263,17 +263,6 @@ var throttledMouseHover = (0, import_lodash_es.throttle)(async (params) => {
     return;
   }
   if (params.customCursor) {
-    const elementUnderCursor = document.elementFromPoint(
-      params.event.clientX,
-      params.event.clientY
-    );
-    if (elementUnderCursor) {
-      if (elementUnderCursor.nodeName === "A" || elementUnderCursor.nodeName === "BUTTON") {
-        elementUnderCursor.classList.add(
-          (0, import_visualBuilder.visualBuilderStyles)()["visual-builder__no-cursor-style"]
-        );
-      }
-    }
     if (config?.collab.enable && config?.collab.isFeedbackMode) {
       collabCustomCursor(params.customCursor);
       handleCursorPosition(params.event, params.customCursor);
