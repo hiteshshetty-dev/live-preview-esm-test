@@ -1,6 +1,7 @@
 import ContentstackLivePreview$1 from './preview/contentstack-live-preview-HOC.cjs';
 import { IStackSdk as IStackSdk$1 } from './types/types.cjs';
 import LightLivePreviewHoC from './light-sdk.cjs';
+export { isVisualEditorEditing } from './visualBuilder/utils/editingState.cjs';
 import './livePreview/types/onEntryChangeCallback.type.cjs';
 import './visualBuilder/types/collab.types.cjs';
 

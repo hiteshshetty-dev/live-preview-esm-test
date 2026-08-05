@@ -83,6 +83,7 @@ function enableInlineEditing({
     actualEditableField.addEventListener("input", onInlineElementInput);
   }
   actualEditableField.setAttribute("contenteditable", "true");
+  actualEditableField.setAttribute("dir", "auto");
   actualEditableField.addEventListener("input", import_handleFieldMouseDown.handleFieldInput);
   actualEditableField.addEventListener("keydown", import_handleFieldMouseDown.handleFieldKeyDown);
   editableElement.setAttribute("data-cs-last-edited", "true");

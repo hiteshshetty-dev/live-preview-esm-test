@@ -18,9 +18,7 @@ import { getEntryIdentifiersInCurrentPage } from "./utils/getEntryIdentifiersInC
 import { resolvePageContext } from "./utils/resolvePageContext.js";
 import visualBuilderPostMessage from "./utils/visualBuilderPostMessage.js";
 import { VisualBuilderPostMessageEvents } from "./utils/types/postMessage.types.js";
-import { setup } from "goober";
 import { debounce, isEqual } from "lodash-es";
-import { h } from "preact";
 import { extractDetailsFromCslp, isValidCslp } from "../cslp/index.js";
 import initUI from "./components/index.js";
 import { useDraftFieldsPostMessageEvent } from "./eventManager/useDraftFieldsPostMessageEvent.js";
@@ -235,7 +233,6 @@ var _VisualBuilder = class _VisualBuilder {
     initUI({
       resizeObserver: this.resizeObserver
     });
-    setup(h);
     this.visualBuilderContainer = document.querySelector(
       ".visual-builder__container"
     );

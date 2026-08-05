@@ -125,6 +125,7 @@ function cleanIndividualFieldResidual(elements) {
       import_constants.VISUAL_BUILDER_FIELD_TYPE_ATTRIBUTE_KEY
     );
     previousSelectedEditableDOM.removeAttribute("contenteditable");
+    previousSelectedEditableDOM.removeAttribute("dir");
     previousSelectedEditableDOM.removeEventListener(
       "input",
       import_handleFieldMouseDown.handleFieldInput

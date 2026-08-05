@@ -45,7 +45,10 @@ function getStyleOfAnElement(element) {
     "margin-top",
     "margin-bottom",
     "-webkit-user-modify",
-    "cursor"
+    "cursor",
+    // let the pseudo element's dir="auto" decide direction, not inline copies
+    "direction",
+    "unicode-bidi"
   ];
   const styles = {};
   styleSheetArray.forEach((style) => {
