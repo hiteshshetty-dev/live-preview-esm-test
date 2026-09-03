@@ -51,6 +51,7 @@ var import_types = require("../../types/types.cjs");
 var import_livePreviewEventManager = __toESM(require("../eventManager/livePreviewEventManager.cjs"), 1);
 var import_editButton2 = require("./editButton.constant.cjs");
 var import_utils = require("../../utils/index.cjs");
+var import_getCurrentPageUrl = require("../../utils/getCurrentPageUrl.cjs");
 function calculateEditButtonPosition(currentHoveredElement, cslpButtonPosition) {
   const editButtonPosition = {
     upperBoundOfTooltip: 0,
@@ -436,6 +437,10 @@ var LivePreviewEditButton = class {
     url.searchParams.append("preview-field", preview_field);
     url.searchParams.append("preview-locale", locale ?? "en-us");
     url.searchParams.append("preview-environment", environment);
+    const pageUrl = (0, import_getCurrentPageUrl.getCurrentPageUrl)();
+    if (pageUrl) {
+      url.searchParams.append("preview-url", pageUrl);
+    }
     return `${url.origin}/${url.hash}${url.search}`;
   }
   linkClickHandler() {

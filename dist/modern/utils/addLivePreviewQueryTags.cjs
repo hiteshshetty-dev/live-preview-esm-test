@@ -24,24 +24,17 @@ __export(addLivePreviewQueryTags_exports, {
 });
 module.exports = __toCommonJS(addLivePreviewQueryTags_exports);
 var import_logger = require("../logger/logger.cjs");
+var import_livePreviewQueryParams = require("./livePreviewQueryParams.constant.cjs");
 function addLivePreviewQueryTags(link) {
   try {
     const docUrl = new URL(document.location.href);
     const newUrl = new URL(link);
-    const livePreviewHash = docUrl.searchParams.get("live_preview");
-    const ctUid = docUrl.searchParams.get("content_type_uid");
-    const entryUid = docUrl.searchParams.get("entry_uid");
-    const previewTimestamp = docUrl.searchParams.get("preview_timestamp");
-    if (livePreviewHash) {
-      newUrl.searchParams.set("live_preview", livePreviewHash);
-    }
-    if (ctUid && entryUid) {
-      newUrl.searchParams.set("content_type_uid", ctUid);
-      newUrl.searchParams.set("entry_uid", entryUid);
-    }
-    if (previewTimestamp) {
-      newUrl.searchParams.set("preview_timestamp", previewTimestamp);
-    }
+    import_livePreviewQueryParams.LIVE_PREVIEW_QUERY_PARAMS.forEach((param) => {
+      const value = docUrl.searchParams.get(param);
+      if (value) {
+        newUrl.searchParams.set(param, value);
+      }
+    });
     return newUrl.href;
   } catch (error) {
     import_logger.PublicLogger.error("Error while adding live preview to URL");

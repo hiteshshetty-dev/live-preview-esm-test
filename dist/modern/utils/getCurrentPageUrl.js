@@ -1,0 +1,21 @@
+import "../chunk-5WRI5ZAA.js";
+
+// src/utils/getCurrentPageUrl.ts
+import { PublicLogger } from "../logger/logger.js";
+import { LIVE_PREVIEW_QUERY_PARAMS } from "./livePreviewQueryParams.constant.js";
+var PARAMS_TO_DROP = [...LIVE_PREVIEW_QUERY_PARAMS, "cslp-buttons"];
+function getCurrentPageUrl() {
+  try {
+    if (typeof window === "undefined" || !window.location?.href) return "";
+    const url = new URL(window.location.href);
+    PARAMS_TO_DROP.forEach((param) => url.searchParams.delete(param));
+    return url.href;
+  } catch (error) {
+    PublicLogger.error("Error while reading the current page URL");
+    return "";
+  }
+}
+export {
+  getCurrentPageUrl
+};
+//# sourceMappingURL=getCurrentPageUrl.js.map

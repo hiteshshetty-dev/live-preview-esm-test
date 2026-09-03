@@ -17,32 +17,28 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// src/utils/addLivePreviewQueryTags.ts
-var addLivePreviewQueryTags_exports = {};
-__export(addLivePreviewQueryTags_exports, {
-  addLivePreviewQueryTags: () => addLivePreviewQueryTags
+// src/utils/getCurrentPageUrl.ts
+var getCurrentPageUrl_exports = {};
+__export(getCurrentPageUrl_exports, {
+  getCurrentPageUrl: () => getCurrentPageUrl
 });
-module.exports = __toCommonJS(addLivePreviewQueryTags_exports);
+module.exports = __toCommonJS(getCurrentPageUrl_exports);
 var import_logger = require("../logger/logger.cjs");
 var import_livePreviewQueryParams = require("./livePreviewQueryParams.constant.cjs");
-function addLivePreviewQueryTags(link) {
+var PARAMS_TO_DROP = [...import_livePreviewQueryParams.LIVE_PREVIEW_QUERY_PARAMS, "cslp-buttons"];
+function getCurrentPageUrl() {
   try {
-    const docUrl = new URL(document.location.href);
-    const newUrl = new URL(link);
-    import_livePreviewQueryParams.LIVE_PREVIEW_QUERY_PARAMS.forEach((param) => {
-      const value = docUrl.searchParams.get(param);
-      if (value) {
-        newUrl.searchParams.set(param, value);
-      }
-    });
-    return newUrl.href;
+    if (typeof window === "undefined" || !window.location?.href) return "";
+    const url = new URL(window.location.href);
+    PARAMS_TO_DROP.forEach((param) => url.searchParams.delete(param));
+    return url.href;
   } catch (error) {
-    import_logger.PublicLogger.error("Error while adding live preview to URL");
-    return link;
+    import_logger.PublicLogger.error("Error while reading the current page URL");
+    return "";
   }
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  addLivePreviewQueryTags
+  getCurrentPageUrl
 });
-//# sourceMappingURL=addLivePreviewQueryTags.cjs.map
+//# sourceMappingURL=getCurrentPageUrl.cjs.map

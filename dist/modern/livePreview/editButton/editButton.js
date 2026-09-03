@@ -14,6 +14,7 @@ import {
 import livePreviewPostMessage from "../eventManager/livePreviewEventManager.js";
 import { EDIT_BUTTON_TOOLTIP_ID } from "./editButton.constant.js";
 import { isOpeningInTimeline } from "../../utils/index.js";
+import { getCurrentPageUrl } from "../../utils/getCurrentPageUrl.js";
 function calculateEditButtonPosition(currentHoveredElement, cslpButtonPosition) {
   const editButtonPosition = {
     upperBoundOfTooltip: 0,
@@ -399,6 +400,10 @@ var LivePreviewEditButton = class {
     url.searchParams.append("preview-field", preview_field);
     url.searchParams.append("preview-locale", locale ?? "en-us");
     url.searchParams.append("preview-environment", environment);
+    const pageUrl = getCurrentPageUrl();
+    if (pageUrl) {
+      url.searchParams.append("preview-url", pageUrl);
+    }
     return `${url.origin}/${url.hash}${url.search}`;
   }
   linkClickHandler() {

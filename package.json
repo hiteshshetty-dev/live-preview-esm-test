@@ -1,6 +1,6 @@
 {
     "name": "@contentstack/live-preview-utils",
-    "version": "4.2.1-stage",
+    "version": "4.4.5-develop-v4",
     "description": "Contentstack provides the Live Preview SDK to establish a communication channel between the various Contentstack SDKs and your website, transmitting  live changes to the preview pane.",
     "type": "module",
     "types": "dist/legacy/index.d.ts",
@@ -91,13 +91,13 @@
         "classnames": "^2.5.1",
         "dayjs": "^1.11.13",
         "deepsignal": "^1.5.0",
-        "dompurify": "^3.2.3",
+        "dompurify": "^3.4.12",
         "get-xpath": "^3.2.0",
         "goober": "^2.1.16",
-        "lodash-es": "^4.17.21",
+        "lodash-es": "^4.18.1",
         "mustache": "^4.2.0",
         "preact": "^10.28.2",
-        "uuid": "^11.0.3"
+        "uuid": "^14.0.0"
     },
     "optionalDependencies": {
         "@rollup/rollup-linux-x64-gnu": "4.9.5"
