@@ -9,12 +9,15 @@ import { visualBuilderStyles } from "../visualBuilder.style.js";
 import { isValidCslp } from "../../cslp/cslpdata.js";
 import { setHighlightVariantFields } from "./useVariantsPostMessageEvent.js";
 import visualBuilderPostMessage from "../utils/visualBuilderPostMessage.js";
+import { ignoreMissingListener } from "../utils/postMessageErrors.js";
 import { VisualBuilderPostMessageEvents } from "../utils/types/postMessage.types.js";
 import { debounce } from "lodash-es";
 var VARIANT_UPDATE_DELAY_MS = 8e3;
 var requestDiscussionHighlights = debounce(() => {
-  visualBuilderPostMessage?.send(
-    VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
+  visualBuilderPostMessage?.send(VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS).catch(
+    ignoreMissingListener(
+      VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
+    )
   );
 }, 200);
 function useRecalculateVariantDataCSLPValues() {

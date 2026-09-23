@@ -45,6 +45,7 @@ module.exports = __toCommonJS(useVariantsPostMessageEvent_exports);
 var import__ = require("../index.cjs");
 var import_visualBuilder = require("../visualBuilder.style.cjs");
 var import_visualBuilderPostMessage = __toESM(require("../utils/visualBuilderPostMessage.cjs"), 1);
+var import_postMessageErrors = require("../utils/postMessageErrors.cjs");
 var import_postMessage = require("../utils/types/postMessage.types.cjs");
 var import_fieldSchemaMap = require("../utils/fieldSchemaMap.cjs");
 var import_useRecalculateVariantDataCSLPValues = require("./useRecalculateVariantDataCSLPValues.cjs");
@@ -156,15 +157,16 @@ function useVariantFieldsPostMessageEvent({ isSSR }) {
         if (selectedVariant) {
           addVariantFieldClass(selectedVariant);
         }
-        import_visualBuilderPostMessage.default?.send(
-          import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
-        );
       } else {
         (0, import_useRecalculateVariantDataCSLPValues.updateVariantClasses)();
-        import_visualBuilderPostMessage.default?.send(
-          import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
-        );
       }
+      import_visualBuilderPostMessage.default?.send(
+        import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
+      ).catch(
+        (0, import_postMessageErrors.ignoreMissingListener)(
+          import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
+        )
+      );
     }
   );
   import_visualBuilderPostMessage.default?.on(

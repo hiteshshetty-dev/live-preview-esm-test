@@ -45,6 +45,7 @@ module.exports = __toCommonJS(useVariantsPostMessageEvent_exports);
 var import__ = require("../index.cjs");
 var import_visualBuilder = require("../visualBuilder.style.cjs");
 var import_visualBuilderPostMessage = __toESM(require("../utils/visualBuilderPostMessage.cjs"), 1);
+var import_postMessageErrors = require("../utils/postMessageErrors.cjs");
 var import_postMessage = require("../utils/types/postMessage.types.cjs");
 var import_fieldSchemaMap = require("../utils/fieldSchemaMap.cjs");
 var import_useRecalculateVariantDataCSLPValues = require("./useRecalculateVariantDataCSLPValues.cjs");
@@ -151,7 +152,7 @@ function useVariantFieldsPostMessageEvent({ isSSR }) {
   (_a = import_visualBuilderPostMessage.default) == null ? void 0 : _a.on(
     import_postMessage.VisualBuilderPostMessageEvents.GET_VARIANT_ID,
     (event) => {
-      var _a2, _b2;
+      var _a2;
       const selectedVariant = event.data.variant;
       setVariant(selectedVariant);
       import_fieldSchemaMap.FieldSchemaMap.clear();
@@ -159,15 +160,16 @@ function useVariantFieldsPostMessageEvent({ isSSR }) {
         if (selectedVariant) {
           addVariantFieldClass(selectedVariant);
         }
-        (_a2 = import_visualBuilderPostMessage.default) == null ? void 0 : _a2.send(
-          import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
-        );
       } else {
         (0, import_useRecalculateVariantDataCSLPValues.updateVariantClasses)();
-        (_b2 = import_visualBuilderPostMessage.default) == null ? void 0 : _b2.send(
-          import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
-        );
       }
+      (_a2 = import_visualBuilderPostMessage.default) == null ? void 0 : _a2.send(
+        import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
+      ).catch(
+        (0, import_postMessageErrors.ignoreMissingListener)(
+          import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
+        )
+      );
     }
   );
   (_b = import_visualBuilderPostMessage.default) == null ? void 0 : _b.on(

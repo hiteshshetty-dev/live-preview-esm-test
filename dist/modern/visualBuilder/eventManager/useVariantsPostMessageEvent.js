@@ -4,6 +4,7 @@ import "../../chunk-5WRI5ZAA.js";
 import { VisualBuilder } from "../index.js";
 import { visualBuilderStyles } from "../visualBuilder.style.js";
 import visualBuilderPostMessage from "../utils/visualBuilderPostMessage.js";
+import { ignoreMissingListener } from "../utils/postMessageErrors.js";
 import { VisualBuilderPostMessageEvents } from "../utils/types/postMessage.types.js";
 import { FieldSchemaMap } from "../utils/fieldSchemaMap.js";
 import { updateVariantClasses } from "./useRecalculateVariantDataCSLPValues.js";
@@ -115,15 +116,16 @@ function useVariantFieldsPostMessageEvent({ isSSR }) {
         if (selectedVariant) {
           addVariantFieldClass(selectedVariant);
         }
-        visualBuilderPostMessage?.send(
-          VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
-        );
       } else {
         updateVariantClasses();
-        visualBuilderPostMessage?.send(
-          VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
-        );
       }
+      visualBuilderPostMessage?.send(
+        VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
+      ).catch(
+        ignoreMissingListener(
+          VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
+        )
+      );
     }
   );
   visualBuilderPostMessage?.on(

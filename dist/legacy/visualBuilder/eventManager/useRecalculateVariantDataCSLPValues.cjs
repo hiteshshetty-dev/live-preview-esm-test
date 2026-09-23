@@ -42,13 +42,16 @@ var import_visualBuilder = require("../visualBuilder.style.cjs");
 var import_cslpdata = require("../../cslp/cslpdata.cjs");
 var import_useVariantsPostMessageEvent = require("./useVariantsPostMessageEvent.cjs");
 var import_visualBuilderPostMessage = __toESM(require("../utils/visualBuilderPostMessage.cjs"), 1);
+var import_postMessageErrors = require("../utils/postMessageErrors.cjs");
 var import_postMessage = require("../utils/types/postMessage.types.cjs");
 var import_lodash_es = require("lodash-es");
 var VARIANT_UPDATE_DELAY_MS = 8e3;
 var requestDiscussionHighlights = (0, import_lodash_es.debounce)(() => {
   var _a;
-  (_a = import_visualBuilderPostMessage.default) == null ? void 0 : _a.send(
-    import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
+  (_a = import_visualBuilderPostMessage.default) == null ? void 0 : _a.send(import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS).catch(
+    (0, import_postMessageErrors.ignoreMissingListener)(
+      import_postMessage.VisualBuilderPostMessageEvents.REQUEST_DISCUSSION_HIGHLIGHTS
+    )
   );
 }, 200);
 function useRecalculateVariantDataCSLPValues() {
