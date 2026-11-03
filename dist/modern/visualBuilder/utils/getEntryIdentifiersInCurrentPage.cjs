@@ -20,35 +20,31 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/visualBuilder/utils/getEntryIdentifiersInCurrentPage.ts
 var getEntryIdentifiersInCurrentPage_exports = {};
 __export(getEntryIdentifiersInCurrentPage_exports, {
-  getEntryIdentifiersInCurrentPage: () => getEntryIdentifiersInCurrentPage
+  getEntryIdentifiersInCurrentPage: () => getEntryIdentifiersInCurrentPage,
+  getEntryIdentifiersSignature: () => getEntryIdentifiersSignature
 });
 module.exports = __toCommonJS(getEntryIdentifiersInCurrentPage_exports);
 var import_cslpdata = require("../../cslp/cslpdata.cjs");
 function getEntryIdentifiersInCurrentPage() {
-  const elementsWithCslp = Array.from(
-    document.querySelectorAll("[data-cslp]")
-  );
   const uniqueEntriesMap = /* @__PURE__ */ new Map();
-  elementsWithCslp.forEach((element) => {
+  document.querySelectorAll("[data-cslp]").forEach((element) => {
     const cslpValue = element.getAttribute("data-cslp");
     if (!(0, import_cslpdata.isValidCslp)(cslpValue)) return;
     const cslpData = (0, import_cslpdata.extractDetailsFromCslp)(cslpValue);
-    uniqueEntriesMap.set(
-      cslpData.entry_uid,
-      {
-        entryUid: cslpData.entry_uid,
-        contentTypeUid: cslpData.content_type_uid,
-        locale: cslpData.locale
-      }
-    );
+    uniqueEntriesMap.set(cslpData.entry_uid, {
+      entryUid: cslpData.entry_uid,
+      contentTypeUid: cslpData.content_type_uid,
+      locale: cslpData.locale
+    });
   });
-  const uniqueEntriesArray = Array.from(uniqueEntriesMap.values());
-  return {
-    entriesInCurrentPage: uniqueEntriesArray
-  };
+  return { entriesInCurrentPage: Array.from(uniqueEntriesMap.values()) };
+}
+function getEntryIdentifiersSignature(entries) {
+  return entries.map((entry) => `${entry.entryUid}.${entry.locale}`).sort().join("|");
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  getEntryIdentifiersInCurrentPage
+  getEntryIdentifiersInCurrentPage,
+  getEntryIdentifiersSignature
 });
 //# sourceMappingURL=getEntryIdentifiersInCurrentPage.cjs.map

@@ -3,29 +3,24 @@ import "../../chunk-5WRI5ZAA.js";
 // src/visualBuilder/utils/getEntryIdentifiersInCurrentPage.ts
 import { extractDetailsFromCslp, isValidCslp } from "../../cslp/cslpdata.js";
 function getEntryIdentifiersInCurrentPage() {
-  const elementsWithCslp = Array.from(
-    document.querySelectorAll("[data-cslp]")
-  );
   const uniqueEntriesMap = /* @__PURE__ */ new Map();
-  elementsWithCslp.forEach((element) => {
+  document.querySelectorAll("[data-cslp]").forEach((element) => {
     const cslpValue = element.getAttribute("data-cslp");
     if (!isValidCslp(cslpValue)) return;
     const cslpData = extractDetailsFromCslp(cslpValue);
-    uniqueEntriesMap.set(
-      cslpData.entry_uid,
-      {
-        entryUid: cslpData.entry_uid,
-        contentTypeUid: cslpData.content_type_uid,
-        locale: cslpData.locale
-      }
-    );
+    uniqueEntriesMap.set(cslpData.entry_uid, {
+      entryUid: cslpData.entry_uid,
+      contentTypeUid: cslpData.content_type_uid,
+      locale: cslpData.locale
+    });
   });
-  const uniqueEntriesArray = Array.from(uniqueEntriesMap.values());
-  return {
-    entriesInCurrentPage: uniqueEntriesArray
-  };
+  return { entriesInCurrentPage: Array.from(uniqueEntriesMap.values()) };
+}
+function getEntryIdentifiersSignature(entries) {
+  return entries.map((entry) => `${entry.entryUid}.${entry.locale}`).sort().join("|");
 }
 export {
-  getEntryIdentifiersInCurrentPage
+  getEntryIdentifiersInCurrentPage,
+  getEntryIdentifiersSignature
 };
 //# sourceMappingURL=getEntryIdentifiersInCurrentPage.js.map

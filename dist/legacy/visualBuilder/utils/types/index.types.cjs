@@ -44,6 +44,7 @@ var FieldDataType = /* @__PURE__ */ ((FieldDataType2) => {
   FieldDataType2["FILE"] = "file";
   FieldDataType2["GLOBAL_FIELD"] = "global_field";
   FieldDataType2["TAXONOMY"] = "taxonomy";
+  FieldDataType2["TAGS"] = "tags";
   return FieldDataType2;
 })(FieldDataType || {});
 // Annotate the CommonJS export names for ESM import in node:

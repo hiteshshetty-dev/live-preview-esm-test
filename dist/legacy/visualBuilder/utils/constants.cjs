@@ -69,7 +69,11 @@ var ALLOWED_MODAL_EDITABLE_FIELD = [
   import_types.FieldDataType.CUSTOM_FIELD,
   import_types.FieldDataType.LINK,
   import_types.FieldDataType.ISODATE,
-  import_types.FieldDataType.URL
+  import_types.FieldDataType.URL,
+  import_types.FieldDataType.SELECT,
+  import_types.FieldDataType.TAXONOMY,
+  import_types.FieldDataType.TAGS,
+  import_types.FieldDataType.BOOLEAN
 ];
 var ALLOWED_REPLACE_FIELDS = [
   import_types.FieldDataType.REFERENCE,

@@ -34,6 +34,7 @@ declare enum VisualBuilderPostMessageEvents {
     GET_RESOLVED_VARIANT_PERMISSIONS = "get-resolved-variant-permissions",
     OPEN_REQUEST_EDIT_ACCESS = "open-request-edit-access",
     GET_ALL_ENTRIES_IN_CURRENT_PAGE = "get-entries-in-current-page",
+    ENTRIES_IN_CURRENT_PAGE_CHANGED = "entries-in-current-page-changed",
     HIDE_FOCUS_OVERLAY = "hide-focus-overlay",
     SHOW_DRAFT_FIELDS = "show-draft-fields",
     REMOVE_DRAFT_FIELDS = "remove-draft-fields",

@@ -31,7 +31,11 @@ var fieldIcons = {
   markdown_rte: import__.EditIcon,
   custom_field: import__.EditIcon,
   isodate: import__.EditIcon,
-  url: import__.EditIcon
+  url: import__.EditIcon,
+  select: import__.EditIcon,
+  taxonomy: import__.EditIcon,
+  tags: import__.EditIcon,
+  boolean: import__.EditIcon
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {

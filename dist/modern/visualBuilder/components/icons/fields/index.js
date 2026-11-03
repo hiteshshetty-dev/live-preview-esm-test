@@ -9,7 +9,11 @@ var fieldIcons = {
   markdown_rte: EditIcon,
   custom_field: EditIcon,
   isodate: EditIcon,
-  url: EditIcon
+  url: EditIcon,
+  select: EditIcon,
+  taxonomy: EditIcon,
+  tags: EditIcon,
+  boolean: EditIcon
 };
 export {
   fieldIcons

@@ -14,6 +14,7 @@ import {
 } from "./multipleElementAddButton.js";
 import { isFieldMultiple } from "./isFieldMultiple.js";
 import { handleInlineEditableField } from "./handleInlineEditableField.js";
+import { FieldDataType } from "./types/index.types.js";
 import { isCustomFieldMultipleInstance } from "./isCustomFieldMultipleInstance.js";
 import { pasteAsPlainText } from "./pasteAsPlainText.js";
 import { removeFieldToolbar } from "../generators/generateToolbar.js";
@@ -55,7 +56,7 @@ async function handleIndividualFields(eventDetails, elements) {
     VISUAL_BUILDER_FIELD_TYPE_ATTRIBUTE_KEY,
     fieldType
   );
-  if (isFieldMultiple(fieldSchema)) {
+  if (isFieldMultiple(fieldSchema) && fieldType !== FieldDataType.SELECT) {
     if (!isCustomFieldMultipleInstance(fieldSchema, fieldMetadata) && lastEditedField !== editableElement) {
       const addButtonLabel = fieldSchema.data_type === "blocks" ? (
         // ? `Add ${fieldSchema.display_name ?? "Modular Block"}`

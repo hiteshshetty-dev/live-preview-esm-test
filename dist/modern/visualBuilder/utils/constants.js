@@ -31,7 +31,11 @@ var ALLOWED_MODAL_EDITABLE_FIELD = [
   FieldDataType.CUSTOM_FIELD,
   FieldDataType.LINK,
   FieldDataType.ISODATE,
-  FieldDataType.URL
+  FieldDataType.URL,
+  FieldDataType.SELECT,
+  FieldDataType.TAXONOMY,
+  FieldDataType.TAGS,
+  FieldDataType.BOOLEAN
 ];
 var ALLOWED_REPLACE_FIELDS = [
   FieldDataType.REFERENCE,

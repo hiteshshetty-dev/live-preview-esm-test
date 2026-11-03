@@ -25,6 +25,10 @@ declare class VisualBuilder {
     private scrollEventHandler;
     private resizeEventHandler;
     private resizeObserver;
+    private lastEntriesSignature;
+    /** Tell the editor which entries are on the page, only when the set changed. */
+    private notifyEntriesInPageIfChanged;
+    private onBodyMutation;
     private mutationObserver;
     private threadMutationObserver;
     constructor();

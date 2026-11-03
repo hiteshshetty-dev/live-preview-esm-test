@@ -34,6 +34,7 @@ var import_isFieldDisabled = require("./isFieldDisabled.cjs");
 var import_multipleElementAddButton = require("./multipleElementAddButton.cjs");
 var import_isFieldMultiple = require("./isFieldMultiple.cjs");
 var import_handleInlineEditableField = require("./handleInlineEditableField.cjs");
+var import_types = require("./types/index.types.cjs");
 var import_isCustomFieldMultipleInstance = require("./isCustomFieldMultipleInstance.cjs");
 var import_pasteAsPlainText = require("./pasteAsPlainText.cjs");
 var import_generateToolbar = require("../generators/generateToolbar.cjs");
@@ -75,7 +76,7 @@ async function handleIndividualFields(eventDetails, elements) {
     import_constants.VISUAL_BUILDER_FIELD_TYPE_ATTRIBUTE_KEY,
     fieldType
   );
-  if ((0, import_isFieldMultiple.isFieldMultiple)(fieldSchema)) {
+  if ((0, import_isFieldMultiple.isFieldMultiple)(fieldSchema) && fieldType !== import_types.FieldDataType.SELECT) {
     if (!(0, import_isCustomFieldMultipleInstance.isCustomFieldMultipleInstance)(fieldSchema, fieldMetadata) && lastEditedField !== editableElement) {
       const addButtonLabel = fieldSchema.data_type === "blocks" ? (
         // ? `Add ${fieldSchema.display_name ?? "Modular Block"}`

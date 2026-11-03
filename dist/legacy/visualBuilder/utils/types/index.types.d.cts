@@ -41,7 +41,8 @@ declare enum FieldDataType {
     EXPERIENCE_CONTAINER = "experience_container",
     FILE = "file",
     GLOBAL_FIELD = "global_field",
-    TAXONOMY = "taxonomy"
+    TAXONOMY = "taxonomy",
+    TAGS = "tags"
 }
 interface VisualBuilderEditContext {
     visualBuilderContainer: HTMLDivElement;

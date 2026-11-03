@@ -117,6 +117,9 @@ function FieldToolbarComponent(props) {
   let Icon = null;
   let fieldType = null;
   let isWholeMultipleField = false;
+  let isMultipleSelect = false;
+  let isTaxonomyField = false;
+  let isTagsField = false;
   const APP_LIST_MIN_WIDTH = 230;
   let disableFieldActions = false;
   let isCustomFieldMultipleInstance = false;
@@ -141,7 +144,10 @@ function FieldToolbarComponent(props) {
     isWholeMultipleField = isMultiple && (fieldMetadata.fieldPathWithIndex === fieldMetadata.instance.fieldPathWithIndex || ((_c = fieldMetadata.multipleFieldMetadata) == null ? void 0 : _c.index) === -1);
     isCustomFieldMultipleInstance = checkIsCustomFieldMultipleInstance(fieldSchema, fieldMetadata);
     isCustomFieldWholeMultiple = fieldType === FieldDataType.CUSTOM_FIELD && isMultiple && isWholeMultipleField;
-    if (isCustomFieldWholeMultiple) {
+    isMultipleSelect = fieldType === FieldDataType.SELECT && isMultiple;
+    isTaxonomyField = fieldType === FieldDataType.TAXONOMY;
+    isTagsField = fieldType === FieldDataType.TAGS;
+    if (isCustomFieldWholeMultiple || isMultipleSelect || isTaxonomyField || isTagsField) {
       isModalEditable = true;
     } else {
       isModalEditable = ALLOWED_MODAL_EDITABLE_FIELD.includes(fieldType) && !isWholeMultipleField;
@@ -186,7 +192,19 @@ function FieldToolbarComponent(props) {
       onClick: (e) => {
         e.preventDefault();
         e.stopPropagation();
-        handleEdit(fieldMetadata);
+        handleEdit(
+          isMultipleSelect || isTaxonomyField || isTagsField ? {
+            ...fieldMetadata,
+            instance: {
+              ...fieldMetadata.instance,
+              fieldPathWithIndex: fieldMetadata.fieldPathWithIndex
+            },
+            multipleFieldMetadata: {
+              ...fieldMetadata.multipleFieldMetadata,
+              index: -1
+            }
+          } : fieldMetadata
+        );
       },
       disabled: disableFieldActions,
       children: /* @__PURE__ */ jsx(Icon, {})
@@ -400,7 +418,7 @@ function FieldToolbarComponent(props) {
                       disabled: disableFieldActions
                     }
                   ) : null,
-                  isMultiple && !isWholeMultipleField ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                  isMultiple && !isWholeMultipleField && !isMultipleSelect && !isTaxonomyField ? /* @__PURE__ */ jsxs(Fragment, { children: [
                     /* @__PURE__ */ jsx(
                       "button",
                       {

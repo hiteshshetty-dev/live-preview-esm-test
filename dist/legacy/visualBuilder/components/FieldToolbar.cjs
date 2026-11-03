@@ -133,6 +133,9 @@ function FieldToolbarComponent(props) {
   let Icon = null;
   let fieldType = null;
   let isWholeMultipleField = false;
+  let isMultipleSelect = false;
+  let isTaxonomyField = false;
+  let isTagsField = false;
   const APP_LIST_MIN_WIDTH = 230;
   let disableFieldActions = false;
   let isCustomFieldMultipleInstance = false;
@@ -157,7 +160,10 @@ function FieldToolbarComponent(props) {
     isWholeMultipleField = isMultiple && (fieldMetadata.fieldPathWithIndex === fieldMetadata.instance.fieldPathWithIndex || ((_c = fieldMetadata.multipleFieldMetadata) == null ? void 0 : _c.index) === -1);
     isCustomFieldMultipleInstance = (0, import_isCustomFieldMultipleInstance.isCustomFieldMultipleInstance)(fieldSchema, fieldMetadata);
     isCustomFieldWholeMultiple = fieldType === import_types.FieldDataType.CUSTOM_FIELD && isMultiple && isWholeMultipleField;
-    if (isCustomFieldWholeMultiple) {
+    isMultipleSelect = fieldType === import_types.FieldDataType.SELECT && isMultiple;
+    isTaxonomyField = fieldType === import_types.FieldDataType.TAXONOMY;
+    isTagsField = fieldType === import_types.FieldDataType.TAGS;
+    if (isCustomFieldWholeMultiple || isMultipleSelect || isTaxonomyField || isTagsField) {
       isModalEditable = true;
     } else {
       isModalEditable = import_constants.ALLOWED_MODAL_EDITABLE_FIELD.includes(fieldType) && !isWholeMultipleField;
@@ -202,7 +208,19 @@ function FieldToolbarComponent(props) {
       onClick: (e) => {
         e.preventDefault();
         e.stopPropagation();
-        handleEdit(fieldMetadata);
+        handleEdit(
+          isMultipleSelect || isTaxonomyField || isTagsField ? {
+            ...fieldMetadata,
+            instance: {
+              ...fieldMetadata.instance,
+              fieldPathWithIndex: fieldMetadata.fieldPathWithIndex
+            },
+            multipleFieldMetadata: {
+              ...fieldMetadata.multipleFieldMetadata,
+              index: -1
+            }
+          } : fieldMetadata
+        );
       },
       disabled: disableFieldActions,
       children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icon, {})
@@ -416,7 +434,7 @@ function FieldToolbarComponent(props) {
                       disabled: disableFieldActions
                     }
                   ) : null,
-                  isMultiple && !isWholeMultipleField ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+                  isMultiple && !isWholeMultipleField && !isMultipleSelect && !isTaxonomyField ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
                     /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
                       "button",
                       {

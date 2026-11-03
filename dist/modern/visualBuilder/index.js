@@ -14,9 +14,13 @@ import {
 } from "../types/types.js";
 import { generateStartEditingButton } from "./generators/generateStartEditingButton.js";
 import { addFocusOverlay } from "./generators/generateOverlay.js";
-import { getEntryIdentifiersInCurrentPage } from "./utils/getEntryIdentifiersInCurrentPage.js";
+import {
+  getEntryIdentifiersInCurrentPage,
+  getEntryIdentifiersSignature
+} from "./utils/getEntryIdentifiersInCurrentPage.js";
 import { resolvePageContext } from "./utils/resolvePageContext.js";
 import visualBuilderPostMessage from "./utils/visualBuilderPostMessage.js";
+import { ignoreMissingListener } from "./utils/postMessageErrors.js";
 import { VisualBuilderPostMessageEvents } from "./utils/types/postMessage.types.js";
 import { debounce, isEqual } from "lodash-es";
 import { extractDetailsFromCslp, isValidCslp } from "../cslp/index.js";
@@ -122,41 +126,63 @@ var _VisualBuilder = class _VisualBuilder {
         }
       });
     });
-    this.mutationObserver = new MutationObserver(
-      debounce(
-        async () => {
-          updateFocussedStateOnMutation(
-            this.overlayWrapper,
-            this.focusedToolbar,
-            this.visualBuilderContainer,
-            this.resizeObserver
+    // null, not "": an empty page has signature "" and must still send once.
+    this.lastEntriesSignature = null;
+    /** Tell the editor which entries are on the page, only when the set changed. */
+    this.notifyEntriesInPageIfChanged = () => {
+      const entries = getEntryIdentifiersInCurrentPage();
+      const signature = getEntryIdentifiersSignature(
+        entries.entriesInCurrentPage
+      );
+      if (signature === this.lastEntriesSignature) return;
+      this.lastEntriesSignature = signature;
+      visualBuilderPostMessage?.send(
+        VisualBuilderPostMessageEvents.ENTRIES_IN_CURRENT_PAGE_CHANGED,
+        entries
+      ).catch((error) => {
+        if (this.lastEntriesSignature === signature) {
+          this.lastEntriesSignature = null;
+        }
+        ignoreMissingListener(
+          VisualBuilderPostMessageEvents.ENTRIES_IN_CURRENT_PAGE_CHANGED
+        )(error);
+      });
+    };
+    this.onBodyMutation = debounce(
+      async () => {
+        updateFocussedStateOnMutation(
+          this.overlayWrapper,
+          this.focusedToolbar,
+          this.visualBuilderContainer,
+          this.resizeObserver
+        );
+        this.notifyEntriesInPageIfChanged();
+        const emptyBlockParents = Array.from(
+          document.querySelectorAll(`.${VB_EmptyBlockParentClass}`)
+        );
+        const previousEmptyBlockParents = _VisualBuilder.VisualBuilderGlobalState.value.previousEmptyBlockParents;
+        if (!isEqual(emptyBlockParents, previousEmptyBlockParents)) {
+          const noMoreEmptyBlockParent = previousEmptyBlockParents.filter(
+            (x) => !emptyBlockParents.includes(x)
           );
-          const emptyBlockParents = Array.from(
-            document.querySelectorAll(`.${VB_EmptyBlockParentClass}`)
+          const newEmptyBlockParent = emptyBlockParents.filter(
+            (x) => !previousEmptyBlockParents.includes(x)
           );
-          const previousEmptyBlockParents = _VisualBuilder.VisualBuilderGlobalState.value.previousEmptyBlockParents;
-          if (!isEqual(emptyBlockParents, previousEmptyBlockParents)) {
-            const noMoreEmptyBlockParent = previousEmptyBlockParents.filter(
-              (x) => !emptyBlockParents.includes(x)
-            );
-            const newEmptyBlockParent = emptyBlockParents.filter(
-              (x) => !previousEmptyBlockParents.includes(x)
-            );
-            removeEmptyBlocks(noMoreEmptyBlockParent);
-            await generateEmptyBlocks(newEmptyBlockParent);
-            _VisualBuilder.VisualBuilderGlobalState.value = {
-              ..._VisualBuilder.VisualBuilderGlobalState.value,
-              previousEmptyBlockParents: emptyBlockParents
-            };
-          }
-          if (_VisualBuilder.VisualBuilderGlobalState.value.variant && _VisualBuilder.VisualBuilderGlobalState.value.highlightVariantFields) {
-            debounceAddVariantFieldClass(_VisualBuilder.VisualBuilderGlobalState.value.variant);
-          }
-        },
-        100,
-        { trailing: true }
-      )
+          removeEmptyBlocks(noMoreEmptyBlockParent);
+          await generateEmptyBlocks(newEmptyBlockParent);
+          _VisualBuilder.VisualBuilderGlobalState.value = {
+            ..._VisualBuilder.VisualBuilderGlobalState.value,
+            previousEmptyBlockParents: emptyBlockParents
+          };
+        }
+        if (_VisualBuilder.VisualBuilderGlobalState.value.variant && _VisualBuilder.VisualBuilderGlobalState.value.highlightVariantFields) {
+          debounceAddVariantFieldClass(_VisualBuilder.VisualBuilderGlobalState.value.variant);
+        }
+      },
+      100,
+      { trailing: true }
     );
+    this.mutationObserver = new MutationObserver(this.onBodyMutation);
     this.threadMutationObserver = new MutationObserver(
       debounce(() => {
         const container = document.querySelector(
@@ -195,6 +221,7 @@ var _VisualBuilder = class _VisualBuilder {
       });
       this.resizeObserver.disconnect();
       this.mutationObserver.disconnect();
+      this.onBodyMutation.cancel();
       this.threadMutationObserver.disconnect();
       _VisualBuilder.VisualBuilderGlobalState.value = {
         previousSelectedEditableDOM: null,
@@ -299,7 +326,9 @@ var _VisualBuilder = class _VisualBuilder {
         useHighlightCommentIcon();
         this.mutationObserver.observe(document.body, {
           childList: true,
-          subtree: true
+          subtree: true,
+          attributes: true,
+          attributeFilter: ["data-cslp"]
         });
         getHighlightVariantFieldsStatus().then((result) => {
           setHighlightVariantFields(result.highlightVariantFields);
@@ -308,6 +337,7 @@ var _VisualBuilder = class _VisualBuilder {
           VisualBuilderPostMessageEvents.GET_ALL_ENTRIES_IN_CURRENT_PAGE,
           getEntryIdentifiersInCurrentPage
         );
+        this.notifyEntriesInPageIfChanged();
         visualBuilderPostMessage?.send(
           VisualBuilderPostMessageEvents.SEND_VARIANT_AND_LOCALE
         );

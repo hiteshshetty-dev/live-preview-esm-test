@@ -71,10 +71,14 @@ async function getContentTypeName(contentTypeUid) {
     return "";
   }
 }
-async function getReferenceParentMap() {
+async function getReferenceParentMap(fieldMetadata) {
   var _a;
   try {
-    const result = await ((_a = import_visualBuilderPostMessage.default) == null ? void 0 : _a.send(import_postMessage.VisualBuilderPostMessageEvents.REFERENCE_MAP, {})) ?? {};
+    const result = await ((_a = import_visualBuilderPostMessage.default) == null ? void 0 : _a.send(import_postMessage.VisualBuilderPostMessageEvents.REFERENCE_MAP, {
+      entry_uid: fieldMetadata.entry_uid,
+      content_type_uid: fieldMetadata.content_type_uid,
+      locale: fieldMetadata.locale
+    })) ?? {};
     return result;
   } catch (e) {
     console.warn("[getFieldLabelWrapper] Error getting reference parent map", e);
@@ -206,7 +210,7 @@ function FieldLabelWrapperComponent(props) {
         getContentTypeName(
           props.fieldMetadata.content_type_uid
         ),
-        getReferenceParentMap()
+        getReferenceParentMap(props.fieldMetadata)
       ]);
       const entryUid = props.fieldMetadata.entry_uid;
       const referenceData = referenceParentMap[entryUid];

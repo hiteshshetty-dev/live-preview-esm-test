@@ -43,6 +43,7 @@ var import_generateOverlay = require("./generators/generateOverlay.cjs");
 var import_getEntryIdentifiersInCurrentPage = require("./utils/getEntryIdentifiersInCurrentPage.cjs");
 var import_resolvePageContext = require("./utils/resolvePageContext.cjs");
 var import_visualBuilderPostMessage = __toESM(require("./utils/visualBuilderPostMessage.cjs"), 1);
+var import_postMessageErrors = require("./utils/postMessageErrors.cjs");
 var import_postMessage = require("./utils/types/postMessage.types.cjs");
 var import_lodash_es = require("lodash-es");
 var import_cslp = require("../cslp/index.cjs");
@@ -133,41 +134,64 @@ var _VisualBuilder = class _VisualBuilder {
         }
       });
     });
-    this.mutationObserver = new MutationObserver(
-      (0, import_lodash_es.debounce)(
-        async () => {
-          (0, import_updateFocussedState.updateFocussedStateOnMutation)(
-            this.overlayWrapper,
-            this.focusedToolbar,
-            this.visualBuilderContainer,
-            this.resizeObserver
+    // null, not "": an empty page has signature "" and must still send once.
+    this.lastEntriesSignature = null;
+    /** Tell the editor which entries are on the page, only when the set changed. */
+    this.notifyEntriesInPageIfChanged = () => {
+      var _a;
+      const entries = (0, import_getEntryIdentifiersInCurrentPage.getEntryIdentifiersInCurrentPage)();
+      const signature = (0, import_getEntryIdentifiersInCurrentPage.getEntryIdentifiersSignature)(
+        entries.entriesInCurrentPage
+      );
+      if (signature === this.lastEntriesSignature) return;
+      this.lastEntriesSignature = signature;
+      (_a = import_visualBuilderPostMessage.default) == null ? void 0 : _a.send(
+        import_postMessage.VisualBuilderPostMessageEvents.ENTRIES_IN_CURRENT_PAGE_CHANGED,
+        entries
+      ).catch((error) => {
+        if (this.lastEntriesSignature === signature) {
+          this.lastEntriesSignature = null;
+        }
+        (0, import_postMessageErrors.ignoreMissingListener)(
+          import_postMessage.VisualBuilderPostMessageEvents.ENTRIES_IN_CURRENT_PAGE_CHANGED
+        )(error);
+      });
+    };
+    this.onBodyMutation = (0, import_lodash_es.debounce)(
+      async () => {
+        (0, import_updateFocussedState.updateFocussedStateOnMutation)(
+          this.overlayWrapper,
+          this.focusedToolbar,
+          this.visualBuilderContainer,
+          this.resizeObserver
+        );
+        this.notifyEntriesInPageIfChanged();
+        const emptyBlockParents = Array.from(
+          document.querySelectorAll(`.${import__.VB_EmptyBlockParentClass}`)
+        );
+        const previousEmptyBlockParents = _VisualBuilder.VisualBuilderGlobalState.value.previousEmptyBlockParents;
+        if (!(0, import_lodash_es.isEqual)(emptyBlockParents, previousEmptyBlockParents)) {
+          const noMoreEmptyBlockParent = previousEmptyBlockParents.filter(
+            (x) => !emptyBlockParents.includes(x)
           );
-          const emptyBlockParents = Array.from(
-            document.querySelectorAll(`.${import__.VB_EmptyBlockParentClass}`)
+          const newEmptyBlockParent = emptyBlockParents.filter(
+            (x) => !previousEmptyBlockParents.includes(x)
           );
-          const previousEmptyBlockParents = _VisualBuilder.VisualBuilderGlobalState.value.previousEmptyBlockParents;
-          if (!(0, import_lodash_es.isEqual)(emptyBlockParents, previousEmptyBlockParents)) {
-            const noMoreEmptyBlockParent = previousEmptyBlockParents.filter(
-              (x) => !emptyBlockParents.includes(x)
-            );
-            const newEmptyBlockParent = emptyBlockParents.filter(
-              (x) => !previousEmptyBlockParents.includes(x)
-            );
-            (0, import_generateEmptyBlock.removeEmptyBlocks)(noMoreEmptyBlockParent);
-            await (0, import_generateEmptyBlock.generateEmptyBlocks)(newEmptyBlockParent);
-            _VisualBuilder.VisualBuilderGlobalState.value = {
-              ..._VisualBuilder.VisualBuilderGlobalState.value,
-              previousEmptyBlockParents: emptyBlockParents
-            };
-          }
-          if (_VisualBuilder.VisualBuilderGlobalState.value.variant && _VisualBuilder.VisualBuilderGlobalState.value.highlightVariantFields) {
-            (0, import_useVariantsPostMessageEvent.debounceAddVariantFieldClass)(_VisualBuilder.VisualBuilderGlobalState.value.variant);
-          }
-        },
-        100,
-        { trailing: true }
-      )
+          (0, import_generateEmptyBlock.removeEmptyBlocks)(noMoreEmptyBlockParent);
+          await (0, import_generateEmptyBlock.generateEmptyBlocks)(newEmptyBlockParent);
+          _VisualBuilder.VisualBuilderGlobalState.value = {
+            ..._VisualBuilder.VisualBuilderGlobalState.value,
+            previousEmptyBlockParents: emptyBlockParents
+          };
+        }
+        if (_VisualBuilder.VisualBuilderGlobalState.value.variant && _VisualBuilder.VisualBuilderGlobalState.value.highlightVariantFields) {
+          (0, import_useVariantsPostMessageEvent.debounceAddVariantFieldClass)(_VisualBuilder.VisualBuilderGlobalState.value.variant);
+        }
+      },
+      100,
+      { trailing: true }
     );
+    this.mutationObserver = new MutationObserver(this.onBodyMutation);
     this.threadMutationObserver = new MutationObserver(
       (0, import_lodash_es.debounce)(() => {
         const container = document.querySelector(
@@ -206,6 +230,7 @@ var _VisualBuilder = class _VisualBuilder {
       });
       this.resizeObserver.disconnect();
       this.mutationObserver.disconnect();
+      this.onBodyMutation.cancel();
       this.threadMutationObserver.disconnect();
       _VisualBuilder.VisualBuilderGlobalState.value = {
         previousSelectedEditableDOM: null,
@@ -312,7 +337,9 @@ var _VisualBuilder = class _VisualBuilder {
         (0, import_useHighlightCommentIcon.useHighlightCommentIcon)();
         this.mutationObserver.observe(document.body, {
           childList: true,
-          subtree: true
+          subtree: true,
+          attributes: true,
+          attributeFilter: ["data-cslp"]
         });
         (0, import_useVariantsPostMessageEvent.getHighlightVariantFieldsStatus)().then((result) => {
           (0, import_useVariantsPostMessageEvent.setHighlightVariantFields)(result.highlightVariantFields);
@@ -321,6 +348,7 @@ var _VisualBuilder = class _VisualBuilder {
           import_postMessage.VisualBuilderPostMessageEvents.GET_ALL_ENTRIES_IN_CURRENT_PAGE,
           import_getEntryIdentifiersInCurrentPage.getEntryIdentifiersInCurrentPage
         );
+        this.notifyEntriesInPageIfChanged();
         (_b = import_visualBuilderPostMessage.default) == null ? void 0 : _b.send(
           import_postMessage.VisualBuilderPostMessageEvents.SEND_VARIANT_AND_LOCALE
         );
